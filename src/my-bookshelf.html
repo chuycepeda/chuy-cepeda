@@ -1,0 +1,649 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="my-bookshelf">
+ <template>
+    <style include="shared-styles"></style>
+    <style is="custom-style">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+      .card {
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        padding: 16px;
+        margin: 24px;
+        border-radius: 5px;
+        background-color: #fff;
+        color: #757575;
+      }
+      .circle {
+        display: inline-block;
+        height: 64px;
+        width: 64px;
+        border-radius: 50%;
+        background: #ddd;
+        line-height: 64px;
+        font-size: 30px;
+        color: #555;
+        text-align: center;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 16px 0;
+        color: #212121;
+      }
+
+      .cafe-header { @apply(--paper-font-headline); }
+      .cafe-light { color: var(--paper-grey-600); }
+      .cafe-location {
+        float: right;
+        font-size: 15px;
+        vertical-align: middle;
+      }
+      .cafe-reserve { color: var(--google-blue-500); }
+      .iron-selected{
+        border: 1px solid rgba(128, 128, 128, 0.13);
+        border-radius: 10px;
+      }
+    </style>
+    <p style="margin-left:24px; font-family:roboto-thin;">Search: <input value="{{searchString::input}}"></p>
+    <div class="row">
+      <template is="dom-repeat" items="{{books}}" filter="{{computeFilter(searchString)}}">
+        <div class="col s12 m6">
+          <div class="card" style="height:500px;">
+            <div class="container">
+              <div class="section">
+                <div class="row" style="margin-top:15px;">
+                  <div class="col s12 m6">
+                    <div class="cafe-header">
+                      <div class="cafe-location cafe-light">
+                      <div class="row">
+                        <div class="col s12">
+                          <img class="responsive-img z-depth-2" src="{{item.Image}}">
+                        </div>
+                      </div>
+
+                      </div>
+                    </div>                
+                  </div>
+                  <div class="col s12 m6">
+                    <h4  class="flow-text" style="font-family:roboto-thin;"><!-- <div># <span>{{index}}</span></div> -->{{item.Title}}</h4>
+                    <h6 class="flow-text" >{{item.Author}}</h6>
+                    <div class="cafe-rating">
+                      <a href="{{item.Link}}" style="text-transform: uppercase; font-family: roboto-thin" target="_blank">See at amazon</a>
+                    </div>
+                    <div class="col s12">
+                      <p style="font-family:roboto-light; font-size:14px;">
+                        {{item.Description}}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'my-bookshelf',
+
+        properties: {
+          books: {
+            type: Array,
+            notify: true,
+          },          
+        },
+
+        _shuffle: function (array) {
+            var currentIndex = array.length, temporaryValue, randomIndex;
+
+            while (0 !== currentIndex) {
+
+              randomIndex = Math.floor(Math.random() * currentIndex);
+              currentIndex -= 1;
+
+              temporaryValue = array[currentIndex];
+              array[currentIndex] = array[randomIndex];
+              array[randomIndex] = temporaryValue;
+            }
+
+            return array;
+          },
+        computeFilter: function(string) {
+          if (!string) {
+            return null;
+          } else {
+            string = string.toLowerCase();
+            return function(book) {
+              var title = book.Title.toLowerCase();
+              var author = book.Author.toLowerCase();
+              return (title.indexOf(string) != -1 ||
+                  author.indexOf(string) != -1);
+            };
+          }
+        },
+        ready: function() {
+          this.books = [
+            {
+              'Image': 'https://images-na.ssl-images-amazon.com/images/I/41puRJbtwkL.jpg', 
+              'Title': 'Zero to One', 
+              'Author': 'Peter Thiel & Blake Masters',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'https://www.amazon.com/Zero-One-Notes-Startups-Future/dp/0804139296', 
+              'Description':'A concise book on lean entrepreneuship, out-of-the-box thinking and amazing stories and lessons from the Paypal Mafia.'
+            },{
+              'Image': 'http://ecx.images-amazon.com/images/I/41ILsjEMw-L._SX356_BO1,204,203,200_.jpg', 
+              'Title': 'The 48 Laws of Power', 
+              'Author': 'Robert Greene ',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/48-Laws-Power-Robert-Greene/dp/0140280197/ref=sr_1_sc_1?ie=UTF8&qid=1460077360&sr=8-1-spell&keywords=48+laws+od+power', 
+              'Description':'A crude book for power-game players. Cold as stone and a bit de-humanized, it is a Machiavelli or Sun Tzu modern approach for power-game players.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51GYwz-JAvL._SX331_BO1,204,203,200_.jpg', 
+              'Title': 'Intentional Possibility', 
+              'Author': 'Sergio Sedas',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'ffc107'},
+              'Link': 'http://www.amazon.com/Intentional-Possibility-Magic-Happiness-Change-ebook/dp/B0180W6QOS/ref=sr_1_1?ie=UTF8&qid=1460077716&sr=8-1&keywords=intentional+possibility', 
+              'Description':'A book about going further than managing and engaging people. It is about showing people possibility as a drive and inspiration, as a reason to be alive and fight for.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/41p4GXYbUtL._SX324_BO1,204,203,200_.jpg', 
+              'Title': 'Nudge', 
+              'Author': 'Richard H. Thaler ',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'9e9e9e', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Nudge-Improving-Decisions-Health-Happiness/dp/014311526X/ref=sr_1_1?ie=UTF8&qid=1460080881&sr=8-1&keywords=nudge', 
+              'Description':'A book about improving decisions in happiness and spreading good behavior in societies.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51X8SKeWXYL._SX339_BO1,204,203,200_.jpg', 
+              'Title': 'The Dragonfly Effect', 
+              'Author': 'Jennifer Aaker',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Dragonfly-Effect-Effective-Powerful-Social/dp/0470614153/ref=sr_1_1?ie=UTF8&qid=1460081090&sr=8-1&keywords=the+dragonfly+effect', 
+              'Description':'A book about FGET: focus, grab attention, engage and take action.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51vN15YCJyL._SX329_BO1,204,203,200_.jpg', 
+              'Title': 'The Lean Startup', 
+              'Author': 'Eric Ries',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Lean-Startup-Entrepreneurs-Continuous-Innovation/dp/0307887898/ref=sr_1_1?ie=UTF8&qid=1460081870&sr=8-1&keywords=the+lean+startup', 
+              'Description':'A book about modern, tech-based entrepreneurship.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51JRGT88EBL._SX330_BO1,204,203,200_.jpg', 
+              'Title': 'Awakening the Buddha Within', 
+              'Author': 'Lama Surya Das',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Awakening-Buddha-Within-Tibetan-Western/dp/0767901576/ref=sr_1_1?ie=UTF8&qid=1460082000&sr=8-1&keywords=awakening+the+buddha+within', 
+              'Description':'A book about human elightenment, the pursuit of kindness and perfection for living a life lived for others.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/418XttEFsaL._SX329_BO1,204,203,200_.jpg', 
+              'Title': 'Steve Jobs', 
+              'Author': 'Walter Issacson',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Steve-Jobs-Walter-Isaacson/dp/1501127624/ref=sr_1_1?ie=UTF8&qid=1460082166&sr=8-1&keywords=steve+jobs+walter+isaacson', 
+              'Description':'A book about a complicated man that changed the world through his creativity and product perfectionism; or why no Apple product has an OFF button.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51vQuGr9OeL._SX384_BO1,204,203,200_.jpg', 
+              'Title': 'El lobo estepario', 
+              'Author': 'Hermann Hesse',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/lobo-estepario-Spanish-Hermann-Hesse/dp/1517006031/ref=sr_1_1?ie=UTF8&qid=1460082294&sr=8-1&keywords=el+lobo+estepario', 
+              'Description':'A book about the inner worlds and outter experiences of an extraordinary man and author; an autobigraphy of a lonely Hermann Hesse.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/41892UChEgL._SX324_BO1,204,203,200_.jpg', 
+              'Title': 'Uncertainty', 
+              'Author': 'Jonathan Fields',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Uncertainty-Turning-Fear-Doubt-Brilliance/dp/1591845661/ref=sr_1_1?ie=UTF8&qid=1460082506&sr=8-1&keywords=uncertainty', 
+              'Description':'A book about taking action and being smart-humble when things are not under control.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/510IM278bFL._SX301_BO1,204,203,200_.jpg', 
+              'Title': 'The Gift of Fear', 
+              'Author': 'Gavin de Becker',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/The-Gift-Fear-Gavin-Becker/dp/0440226198', 
+              'Description':'A book about trusting our stomache. Teachings on intuition and the power of the survival instincts.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51xb85HS7QL._SX324_BO1,204,203,200_.jpg', 
+              'Title': 'The Magic of Thinking Big', 
+              'Author': 'David Schwartz',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Magic-Thinking-Big-David-Schwartz/dp/0671646788/ref=sr_1_1?s=books&ie=UTF8&qid=1460082592&sr=1-1&keywords=the+magic+of+thinking+big', 
+              'Description':'A book about unleashing our subcouncious mind and deliver our best self.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51-DhSeW-QL._SX332_BO1,204,203,200_.jpg', 
+              'Title': 'The Second Machine Age', 
+              'Author': 'Erik Brynjolfsson',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Second-Machine-Age-Prosperity-Technologies/dp/0393350649/ref=sr_1_1?s=books&ie=UTF8&qid=1460082968&sr=1-1&keywords=the+second+machine+age', 
+              'Description':'A book about expectations across multiple discliplines at times of disruptive connectivity and digital technologies.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51JisukjyUL._SX323_BO1,204,203,200_.jpg', 
+              'Title': 'The New Digital Age', 
+              'Author': 'Eric Schmidt',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'9e9e9e', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/The-New-Digital-Age-Transforming/dp/030794705X/ref=pd_sim_14_3?ie=UTF8&dpID=51JisukjyUL&dpSrc=sims&preST=_AC_UL480_SR312%2C480_&refRID=0K0D48TFV3N4S3HZ3BWZ', 
+              'Description':'A book about the internet possibilities and its socio-economic implications.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/41yD2U5iTAL._SX336_BO1,204,203,200_.jpg', 
+              'Title': 'How Google Works', 
+              'Author': 'Eric Schmidt',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/How-Google-Works-Eric-Schmidt/dp/1455582344/ref=pd_sim_14_5?ie=UTF8&dpID=41yD2U5iTAL&dpSrc=sims&preST=_AC_UL480_SR324%2C480_&refRID=19VRXR69NYJZMH4B6XKM', 
+              'Description':'A book about the shift from a traditional company to the modern corporations full of freedom, open schedules and smart-creative people.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/513LZ8Q2XcL._SX318_BO1,204,203,200_.jpg', 
+              'Title': 'Radical Openness', 
+              'Author': 'Don Tapscott',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Radical-Openness-Unexpected-Principles-Success-ebook/dp/B00B14RIQS/ref=sr_1_1?s=books&ie=UTF8&qid=1460083380&sr=1-1&keywords=radical+openness', 
+              'Description':'A book about sharing, a precedent showing the potential to bring business value in times of sharing economies.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51uL3d9q8CL.jpg', 
+              'Title': 'Pitch Anything', 
+              'Author': 'Oren Klaff',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Pitch-Anything-Innovative-Presenting-Persuading/dp/0071752854/ref=sr_1_1?s=books&ie=UTF8&qid=1460083516&sr=1-1&keywords=pitch+anything',
+              'Description':'A book about framing and winning deals through a natural STRONG methodology.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51bBL%2B9wIaL._SX311_BO1,204,203,200_.jpg', 
+              'Title': 'Ernesto Guevara', 
+              'Author': 'Paco Ignacio Taibo',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'ffc107'},
+              'Link': 'http://www.amazon.com/Ernesto-Guevara-tambien-conocido-Spanish/dp/6070705491/ref=sr_1_1?ie=UTF8&qid=1460084913&sr=8-1&keywords=ernesto+guevara+tambien+conocido+como+el+che',
+              'Description':'A book about the amazing journey lived by "el Che".'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51dhDE--LnL._SX379_BO1,204,203,200_.jpg', 
+              'Title': 'Microinteractions', 
+              'Author': 'Dan Saffer',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Microinteractions-Full-Color-Designing-Details/dp/1491945923/ref=sr_1_1?s=books&ie=UTF8&qid=1460083811&sr=1-1&keywords=microinteractions',
+              'Description':'A book about the importance of detailing digital interfaces for user-experience top performance.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51q%2B2hUgxSL._SX373_BO1,204,203,200_.jpg', 
+              'Title': 'City 2.0', 
+              'Author': 'TED Books',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/City-2-0-Habitat-Future-There-ebook/dp/B00BJ8INII/ref=sr_1_1?s=books&ie=UTF8&qid=1460083822&sr=1-1&keywords=city+2.0',
+              'Description':'A book about the future of cities and the implicated changes we must accept.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51XDucU1GYL._SX322_BO1,204,203,200_.jpg', 
+              'Title': 'Enlightened Courage', 
+              'Author': 'Dilgo Khyentse Rinpoche',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Enlightened-Courage-Explanation-Seven-Point-Training/dp/1559392533/ref=sr_1_1?s=books&ie=UTF8&qid=1460083837&sr=1-1&keywords=enlightened+courage',
+              'Description':'A book about compassion and how to practice it.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51W6VMQdFfL._SX379_BO1,204,203,200_.jpg', 
+              'Title': 'Ethics of Big Data', 
+              'Author': 'Kord Davis',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Ethics-Big-Data-Balancing-Innovation/dp/1449311792/ref=sr_1_1?s=books&ie=UTF8&qid=1460083851&sr=1-1&keywords=ethics+of+big+data',
+              'Description':'A book about what it is and how it compromises our digital future.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51D-rhkqC7L._SX380_BO1,204,203,200_.jpg', 
+              'Title': 'Civic Apps Competition', 
+              'Author': 'Kate Eyler-Werve',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Civic-Apps-Competition-Handbook-Eyler-Werve/dp/1449322646/ref=sr_1_1?s=books&ie=UTF8&qid=1460083938&sr=1-1&keywords=civic+apps+competition',
+              'Description':'A book about hackathons and how to build developer communities for social good.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/5191B5zqR8L._SX359_BO1,204,203,200_.jpg', 
+              'Title': 'Digital Image Processing', 
+              'Author': 'Gonzalez & Woods',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Digital-Image-Processing-Rafael-Gonzalez/dp/013168728X/ref=sr_1_1?s=books&ie=UTF8&qid=1460083954&sr=1-1&keywords=digital+image+processing',
+              'Description':'A book about how to get in love with computer vision and build your own mathematical understandings on how we see things.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51fTu%2BlmXJL._SX379_BO1,204,203,200_.jpg', 
+              'Title': 'Learning OpenCV', 
+              'Author': 'Gary Bradsku',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Learning-OpenCV-Computer-Vision-Library/dp/0596516134/ref=sr_1_2?s=books&ie=UTF8&qid=1460083965&sr=1-2&keywords=opencv',
+              'Description':'A book about the amazing tools build behind the most important computer vision library in history.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/41CMjsHNB3L._SX404_BO1,204,203,200_.jpg', 
+              'Title': 'The Nature of Code', 
+              'Author': 'Daniel Shiffman',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'ffc107'},
+              'Link': 'http://www.amazon.com/Nature-Code-Simulating-Natural-Processing/dp/0985930802/ref=sr_1_1?s=books&ie=UTF8&qid=1460083991&sr=1-1&keywords=the+nature+of+code',
+              'Description':'A book about coding from a natural living being perspective. The best approach I have seen to mimic animal kingdom.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51crrArnOsL._SX379_BO1,204,203,200_.jpg', 
+              'Title': 'Programming Interactivity', 
+              'Author': 'Joshua Noble',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Programming-Interactivity-Designers-Processing-Openframeworks/dp/0596154143/ref=sr_1_3?s=books&ie=UTF8&qid=1460084011&sr=1-3&keywords=openframeworks',
+              'Description':'A book about openframeworks, processing and arduino.'
+            },
+            {
+              'Image': 'https://images-na.ssl-images-amazon.com/images/I/51Wd3jbCJ5L._SX331_BO1,204,203,200_.jpg', 
+              'Title': 'The Resposive City', 
+              'Author': 'Susan Crawford & Stephen Goldsmith',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'https://www.amazon.com/Responsive-City-Communities-Data-Smart-Governance/dp/1118910907',
+              'Description':'A book about the modern world and how cities must respond to an imminent 4th industrial revolution and the implications of a digital divide.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51GxY%2BzTcqL._SX376_BO1,204,203,200_.jpg', 
+              'Title': 'Processing', 
+              'Author': 'Casey Reas',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'ffc107'},
+              'Link': 'http://www.amazon.com/Processing-Programming-Handbook-Designers-Artists/dp/026202828X/ref=sr_1_5?s=books&ie=UTF8&qid=1460084011&sr=1-5&keywords=openframeworks',
+              'Description':'A book about art, beautiful art, outstading art, geek-generated art.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51qRNHEQbvL._SX355_BO1,204,203,200_.jpg', 
+              'Title': 'Artificial Intelligence', 
+              'Author': 'Peter Norvig',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Artificial-Intelligence-Modern-Approach-2nd/dp/0137903952/ref=sr_1_4?s=books&ie=UTF8&qid=1460084047&sr=1-4&keywords=artificial+intelligence+a+modern+approach',
+              'Description':'A book about emulating intelligence in a computer. Summary of most relevants techniques for building intelligent systems.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51oedehWUdL._SX440_BO1,204,203,200_.jpg', 
+              'Title': 'Probabilistic Robotics', 
+              'Author': 'Sebastian Thrun',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Probabilistic-Robotics-Intelligent-Autonomous-Agents/dp/0262201623/ref=sr_1_1?s=books&ie=UTF8&qid=1460084060&sr=1-1&keywords=probabilistic+robotics',
+              'Description':'A book about intelligent robotic systems from a probabilistic approach. Simply amazing, even the cover is beyond its time.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51gfpHE%2BYOL._SX386_BO1,204,203,200_.jpg', 
+              'Title': 'Introduction to Autonomous Mobile Robots', 
+              'Author': 'Roland Siegwart',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'ffc107'},
+              'Link': 'http://www.amazon.com/Introduction-Autonomous-Mobile-Intelligent-Robotics/dp/0262015358/ref=sr_1_2?s=books&ie=UTF8&qid=1460084060&sr=1-2&keywords=probabilistic+robotics',
+              'Description':'A book about intelligent robots and mobility. An empowering book for anyone who is interested in mobile robotics and autonomous control.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/41YQw8wbvpL._SX379_BO1,204,203,200_.jpg', 
+              'Title': 'Behavior-based Robotics', 
+              'Author': 'Ronald Arkin',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Behavior-Based-Robotics-Intelligent-Autonomous-Agents/dp/0262011654/ref=sr_1_1?s=books&ie=UTF8&qid=1460084072&sr=1-1&keywords=behavior+based+robotics',
+              'Description':'A book about making robots behave. This is Marvin Minsky\'s human approach but applied to robots. Intelligence and emotion at its best.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/514byZUF8nL._SX375_BO1,204,203,200_.jpg', 
+              'Title': 'Python for Data Analysis', 
+              'Author': 'Wes McKinney',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Python-Data-Analysis-Wrangling-IPython/dp/1449319793/ref=sr_1_1?s=books&ie=UTF8&qid=1460084112&sr=1-1&keywords=python+for+data+analysis',
+              'Description':'A book about python tools out there to become a data scientist on your own.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51VAMWBCLiL._SX375_BO1,204,203,200_.jpg', 
+              'Title': 'Think Complexity', 
+              'Author': 'Allen Downey',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Think-Complexity-Science-Computational-Modeling/dp/1449314635/ref=sr_1_1?s=books&ie=UTF8&qid=1460084126&sr=1-1&keywords=think+complexity',
+              'Description':'A book about complexity science using python.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51ZpC4IqnnL._SX329_BO1,204,203,200_.jpg', 
+              'Title': 'Open Data Now', 
+              'Author': 'Joel Gurin',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Open-Data-Now-Investing-Innovation/dp/0071829776/ref=sr_1_1?s=books&ie=UTF8&qid=1460084155&sr=1-1&keywords=open+data',
+              'Description':'A book about the data openness revolution and its potential to build new data-driven industries.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/61CNih6gfcL._SX379_BO1,204,203,200_.jpg', 
+              'Title': 'Data Structures and Algorithms in Python', 
+              'Author': 'Michael Structures-Algorithms-Python-Michael-Goodrich',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Structures-Algorithms-Python-Michael-Goodrich/dp/1118290275/ref=sr_1_1?s=books&ie=UTF8&qid=1460084183&sr=1-1&keywords=data+structures+and+algorithms+in+python',
+              'Description':'A book about mastering python like a real software engineer.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/413K6jMPe7L._SX319_BO1,204,203,200_.jpg', 
+              'Title': 'The Google Resume', 
+              'Author': 'Gayle Laakmann McDowell',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Google-Resume-Prepare-Microsoft-Company/dp/0470927623/ref=sr_1_1?s=books&ie=UTF8&qid=1460084232&sr=1-1&keywords=the+google+resume',
+              'Description':'A book about how to land an interview in major software corporations.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/41JWTd4PCWL._SX331_BO1,204,203,200_.jpg', 
+              'Title': 'Lean UX', 
+              'Author': 'Jeff Gothelf',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Lean-UX-Applying-Principles-Experience/dp/1449311652/ref=sr_1_1?s=books&ie=UTF8&qid=1460084273&sr=1-1&keywords=lean+ux',
+              'Description':'A book about not just evolving your digital application, but to know when and how.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51miPN6NbLL._SX316_BO1,204,203,200_.jpg', 
+              'Title': 'Club Bilderberg', 
+              'Author': 'Danie Estulin',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Secretos-Club-Bilderberg-Secrets-Spanish/dp/8484531686/ref=sr_1_1?s=books&ie=UTF8&qid=1460084357&sr=1-1&keywords=los+secretos+del+club+bilderberg',
+              'Description':'A book about conspiracy, the bohemian groove and reptilians among us.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/41cXJLj3BkL._SX277_BO1,204,203,200_.jpg', 
+              'Title': 'The Da Vinci Code', 
+              'Author': 'Dan Brown',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Da-Vinci-Code-Dan-Brown/dp/0307474275/ref=sr_1_1?s=books&ie=UTF8&qid=1460084400&sr=1-1&keywords=dan+brown+da+vinci+code',
+              'Description':'A book about questioning a heritage of beliefs.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/41PvWdPSBYL._SX324_BO1,204,203,200_.jpg', 
+              'Title': 'How to Create Mind', 
+              'Author': 'Ray Kurzweil',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/How-Create-Mind-Thought-Revealed/dp/0143124048/ref=sr_1_1?s=books&ie=UTF8&qid=1460084413&sr=1-1&keywords=how+to+create+mind',
+              'Description':'A book about ... hard to tell; the Kurzweil effect.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51DJG8yp50L._SX331_BO1,204,203,200_.jpg', 
+              'Title': 'The Emotion Machine', 
+              'Author': 'Marvin Minsky',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Emotion-Machine-Commonsense-Artificial-Intelligence/dp/0743276647/ref=sr_1_3?s=books&ie=UTF8&qid=1460084426&sr=1-3&keywords=marvin+minsky',
+              'Description':'A book about Ray Kurzweil thoughts on mind but made for dummies.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/41lvU9QqFcL._SX329_BO1,204,203,200_.jpg', 
+              'Title': 'El Poder del Ahora', 
+              'Author': 'Eckhart Tolle',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/poder-del-ahora-realizacion-espiritual/dp/157731185X/ref=sr_1_1?s=books&ie=UTF8&qid=1460084522&sr=1-1&keywords=eckhart+tolle+el+poder+del+ahora',
+              'Description':'A book about living the ever-present and take action through the teachings of Buddha and meditation.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/41EV9hbgbCL._SX327_BO1,204,203,200_.jpg', 
+              'Title': 'Good to Great', 
+              'Author': 'Jim Collins',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Good-Great-Some-Companies-Others/dp/0066620996/ref=sr_1_1?s=books&ie=UTF8&qid=1460084537&sr=1-1&keywords=good+to+great+jim+collins',
+              'Description':'A book about entrepreneurship and the long-lasting engineering of companies.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/41GLVk1yNFL._SX351_BO1,204,203,200_.jpg', 
+              'Title': 'Pitching Hacks', 
+              'Author': 'Venture Hacks',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Pitching-Hacks-pitch-startups-investors/dp/0557235596/ref=sr_1_1?s=books&ie=UTF8&qid=1460084553&sr=1-1&keywords=pitching+hacks',
+              'Description':'A book about pitching business ideas and raising money.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51kzoi3ftwL._SX331_BO1,204,203,200_.jpg', 
+              'Title': 'Algorithms in a Nutshell', 
+              'Author': 'George Heineman',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Algorithms-Nutshell-OReilly-George-Heineman/dp/059651624X/ref=sr_1_2?s=books&ie=UTF8&qid=1460084581&sr=1-2&keywords=algorithms+in+a+nutshell',
+              'Description':'A book about computer sciene algorithms. A must have reference.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51n7opTpzKL._SX379_BO1,204,203,200_.jpg', 
+              'Title': 'Data Structures and Algorithms with Javascript', 
+              'Author': 'Michael McMillan',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'9e9e9e', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Structures-Algorithms-JavaScript-Michael-McMillan/dp/1449364934/ref=sr_1_1?s=books&ie=UTF8&qid=1460084618&sr=1-1&keywords=data+structures+and+algorithms+in+javascript',
+              'Description':'A book about becoming a software engineer using javascript.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/6122EOEQhOL._SX399_BO1,204,203,200_.jpg', 
+              'Title': 'Data Mining', 
+              'Author': 'Ian Witten',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Data-Mining-Practical-Techniques-Management/dp/0123748569/ref=sr_1_1?s=books&ie=UTF8&qid=1460084643&sr=1-1&keywords=data+mining+practical+machine+learning+tools+and+techniques',
+              'Description':'A book about machine learning tools and techniques. A must have reference.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/41xC5yM5FLL._SX302_BO1,204,203,200_.jpg', 
+              'Title': 'Machine Learning', 
+              'Author': 'Stephen Marsland',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Machine-Learning-Algorithmic-Perspective-Recognition/dp/1420067184/ref=sr_1_2?s=books&ie=UTF8&qid=1460084664&sr=1-2&keywords=machine+learning+an+algorithmic+perspective',
+              'Description':'A book about a very complete and panoramic view of machine learning.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/61zEpn8lkRL._SX369_BO1,204,203,200_.jpg', 
+              'Title': 'Pattern Recognition and Machine Learning', 
+              'Author': 'Christopher Bishop',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Pattern-Recognition-Learning-Information-Statistics/dp/0387310738/ref=sr_1_1?s=books&ie=UTF8&qid=1460084680&sr=1-1&keywords=pattern+recognition+and+machine+learning',
+              'Description':'A book about the science behind machine learning. A must have reference.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51qdqOmbiIL._SX403_BO1,204,203,200_.jpg', 
+              'Title': 'Neuro-Fuzzy and Soft Computing', 
+              'Author': 'Jang, Sun & Mizutani',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Neuro-Fuzzy-Soft-Computing-Computational-Intelligence/dp/0132610663/ref=sr_1_1?ie=UTF8&qid=1460084704&sr=8-1&keywords=neuro+fuzzy+and+soft+computing',
+              'Description':'A book about machine learning the deep, matlab way. Love is in the text.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51DlW2j8poL._SX331_BO1,204,203,200_.jpg', 
+              'Title': 'Resource Revolution', 
+              'Author': 'Stefan Heck & Matt Rogers',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Resource-Revolution-Capture-Business-Opportunity/dp/0544114566/ref=sr_1_1?ie=UTF8&qid=1460084717&sr=8-1&keywords=resource+revolution',
+              'Description':'A book about opportunities and challenges in the use of natural resources.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51z163PaINL._SX361_BO1,204,203,200_.jpg', 
+              'Title': 'Wireless Communications', 
+              'Author': 'Theodore Rappaport',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'9e9e9e', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Wireless-Communications-Principles-Practice-2nd/dp/0130422320/ref=sr_1_1?ie=UTF8&qid=1460084733&sr=8-1&keywords=wireless+communications+rappaport',
+              'Description':'A book about the science behind one of the newest human basic needs.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51mhA7sXOnL._SX321_BO1,204,203,200_.jpg', 
+              'Title': 'El cuadrante del flujo de dinero', 
+              'Author': 'Robert Kiyosaki',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'ffc107'},
+              'Link': 'http://www.amazon.com/cuadrante-flujo-dinero-Negocios-Spanish/dp/9708120200/ref=sr_1_1?ie=UTF8&qid=1460084743&sr=8-1&keywords=el+cuadrante+del+flujo+del+dinero',
+              'Description':'A book about re-thinking the way you want to make and use your money.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51JzoBSebvL._SX348_BO1,204,203,200_.jpg', 
+              'Title': 'Electronic Devices', 
+              'Author': 'Thomas Floyd',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Electronic-Devices-Conventional-Flow-Version/dp/B0089186SK/ref=sr_1_4?ie=UTF8&qid=1460084816&sr=8-4&keywords=electronic+devices+floyd+6th',
+              'Description':'A book about how electrons make love to everything we touch and how we can get into that party.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51VIN54vc5L._SX379_BO1,204,203,200_.jpg', 
+              'Title': 'Mining the Social Web', 
+              'Author': 'Matthew Russell',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Mining-Social-Web-Facebook-LinkedIn/dp/1449367615/ref=sr_1_1?ie=UTF8&qid=1460084873&sr=8-1&keywords=mining+the+social+web',
+              'Description':'A book about opening the social media backdoors for the betterment of data analysis.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/510C32S6Q4L._SX312_BO1,204,203,200_.jpg', 
+              'Title': 'Reframing', 
+              'Author': 'Bandler & Grinder',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Reframing-Neuro-Linguistic-Programming-Transformation-Meaning/dp/0911226257/ref=sr_1_11?ie=UTF8&qid=1460089673&sr=8-11&keywords=richard+bandler',
+              'Description':'A book about neuro-linguistic programming. Fantastic approach to photoshop your mind and re-frame life.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/61N3VZT8T9L._SX311_BO1,204,203,200_.jpg', 
+              'Title': 'Trance-Formations', 
+              'Author': 'Grinder & Bandler',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Trance-Formations-Neuro-Linguistic-Programming-Structure-Hypnosis/dp/0911226230/ref=sr_1_19?ie=UTF8&qid=1460089706&sr=8-19&keywords=richard+bandler',
+              'Description':'A book about neuro-linguistic programming. A mind-cleaner for the self-hypnotist.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/41uiqb4hjTL._SX330_BO1,204,203,200_.jpg', 
+              'Title': 'An Insiders Guide to Submodalities', 
+              'Author': 'Bandler & Grinder',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Insiders-Guide-Sub-Modalities/dp/0916990222/ref=sr_1_26?ie=UTF8&qid=1460089706&sr=8-26&keywords=richard+bandler',
+              'Description':'A book about neuro-linguistic programming; for professionals.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51tr-ERpXwL._SX379_BO1,204,203,200_.jpg', 
+              'Title': 'Google Script', 
+              'Author': 'James Ferreira',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'9e9e9e', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Google-Script-Enterprise-Application-Functionality/dp/1449318525',
+              'Description':'A book about building a complete corporation of bots working by themselves over the Google Apps.'
+            },
+            {
+              'Image': 'http://ecx.images-amazon.com/images/I/51LIZH-OjVL._SX379_BO1,204,203,200_.jpg', 
+              'Title': 'Programming Google App Engine', 
+              'Author': 'Dan Sanderson',
+              'Stars' : {1:'ffc107', 2:'ffc107', 3:'ffc107', 4:'ffc107', 5:'9e9e9e'},
+              'Link': 'http://www.amazon.com/Programming-Google-App-Engine-Sanderson/dp/144939826X/ref=sr_1_sc_2?ie=UTF8&qid=1460342829&sr=8-2-spell&keywords=google+appengine',
+              'Description':'A book about how to build scalable, maintenance-free applications on the web.'
+            }
+          ];
+
+          // this.async(function() {
+            this._shuffle(this.books);
+          // }, 2000);
+
+        }
+      });
+    })();
+  </script>
+</dom-module>

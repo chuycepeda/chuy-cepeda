@@ -1,0 +1,44 @@
+application: chuy-cepeda
+version: production
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /bower_components/
+  static_dir: build/bundled/bower_components
+
+- url: /elements/
+  static_dir: build/bundled/elements
+
+- url: /images/
+  static_dir: build/bundled/images
+
+- url: /scripts/
+  static_dir: build/bundled/scripts
+
+- url: /styles/
+  static_dir: build/bundled/styles
+
+- url: /src
+  static_dir: build/bundled/src
+
+- url: /service-worker.js
+  static_files: build/bundled/service-worker.js
+  upload: build/bundled/service-worker.js
+
+- url: /manifest.json
+  static_files: build/bundled/manifest.json
+  upload: build/bundled/manifest.json
+
+- url: /robots.txt
+  static_files: build/bundled/robots.txt
+  upload: robots.txt
+
+- url: /favicon.ico
+  static_files: build/bundled/favicon.ico
+  upload: favicon.ico
+
+- url: /.*
+  static_files: build/bundled/index.html
+  upload: build/bundled/index.html

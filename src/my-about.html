@@ -1,0 +1,839 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="my-about">
+  <template>
+    <style include="shared-styles"></style> 
+    <style>
+      :host {
+        display: block;
+        padding: 10px;
+      }
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+      }
+      paper-icon-button{
+        height: 56px;
+        width: 56px;
+      }
+      paper-progress{
+        height:16px;
+      }
+      /* +5yrs daily basis */
+      paper-icon-button.g {
+        color: #00E78D; 
+      }
+      paper-progress.g {
+        --paper-progress-active-color: #00E78D;
+      }
+      /* +5yrs monthly basis */
+      paper-icon-button.r {
+        color: #FF2C69;
+      }
+      paper-progress.r {
+        --paper-progress-active-color: #FF2C69;
+      }
+      /* +5yrs hobbist basis */
+      paper-icon-button.b {
+        color: #02B7F4;
+      }
+      paper-progress.b {
+        --paper-progress-active-color: #02B7F4;
+      }
+      .card {
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        padding: 16px;
+        margin: 24px;
+        border-radius: 5px;
+        background-color: #fff;
+        color: #757575;
+      }
+      .circle {
+        display: inline-block;
+        height: 64px;
+        width: 64px;
+        border-radius: 50%;
+        background: #ddd;
+        line-height: 64px;
+        font-size: 30px;
+        color: #555;
+        text-align: center;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 16px 0;
+        color: #212121;
+      }
+      
+        .primary-btn {
+          background-color: #314148;
+        }
+        .primary-btn:hover {
+          background-color: #0A79C9!important;
+        }
+        .headline {
+          padding: 10px 10px;
+        }
+        .small-para {
+          color: #888888;
+        }
+
+        .about, .exp, .portfolio, .clients, .blog, .contact {
+          background-color: #FBFBFB;
+        }
+
+        .skills, .said, .prices, footer, .testmonial {
+          background-color: #314148;
+        }
+
+        .stack{
+          background-color: #1D262B;
+        }
+
+        .about, .skills, .exp, .said, .portfolio, .clients, .testmonial, .subscribe, .blog, .prices, .contact, footer {
+          padding-top: 28px;
+          padding-bottom: 28px;
+        }
+
+        .about .headline h1, .exp .headline h1, .portfolio .headline h1, .clients .headline h1, .blog .headline h1, .contact .headline h1 {
+          color: #383838;
+          text-transform: uppercase;
+          font-weight: 800;
+          margin: 0;
+          font-size: 3em;
+        }
+
+        .skills .headline h1, .said .headline h1, .prices .headline h1, .testmonial .headline h1, .subscribe .headline h1 {
+          margin: 0;
+          font-weight: 800;
+          color: #FFFFFF;
+          text-transform: uppercase;
+          font-size: 3em;
+        }
+
+        /*about section*/
+
+        .about {
+          padding-top: 28px;
+          padding-bottom: 28px;
+          box-shadow: 1px -4px 9px rgba(43, 43, 43, 0.13);
+        }
+        .about-me p span {
+          color: #314148;
+          font-size: 25px;
+          font-weight: 800;
+          text-transform: uppercase;
+        }
+
+        /*skills section*/
+
+        
+        .info h6 {
+          text-align: left;
+          border-bottom: 1px solid #CCCCCC;
+          padding-bottom: 17px;
+          padding-top: 12px;
+          font-size: 13px;
+          color: #6F6F6F;
+        }
+        .info span {
+          margin-right: 15px;
+          letter-spacing: 1px;
+        }
+
+        .rate {
+          padding-top: 20px;
+        }
+        .rate-item p {
+          font-family: monospace;
+          font-size: 15px;
+          text-transform: none;
+          font-family: roboto-thin;
+          color: #ffffff!important;
+          letter-spacing: 1px;
+        }
+        .rate-item i {
+          color: #ffffff!important;
+          margin-right: 15px;
+        }
+        @media only screen and (max-width: 700px) {
+          .rate-item i {
+            margin-top: 8px;
+            font-size: 13px;
+          }
+        }
+
+        .progress {
+          background-color: #CACACA!important;
+        }
+        .progress-bar label {
+          color: white;
+          font-size: 14px;
+          text-transform: uppercase;
+        }
+        .progress-bar {
+          padding-top: 3px;
+        }
+
+        /*experiences section*/
+
+        .exp .small-para {
+          letter-spacing: 1px;
+          line-height: 30px;
+          color: #383838;
+        }
+        .exp h6 {
+          text-transform: uppercase;
+          color: #383838;
+          letter-spacing: 2px;
+          font-size: 17px;
+          font-weight: 800;
+        }
+
+        #timeline {
+          position: relative;
+          padding: 2em 0;
+        }
+        #timeline::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 18px;
+          height: 100%;
+          width: 4px;
+          background: #D4D4D4;
+        }
+        .timeline-content span {
+          text-transform: uppercase;
+          color: #7F7777;
+        }
+        .timeline-content a {
+          float: right!important;
+        }
+        @media only screen and (min-width: 1170px) {
+          #timeline::before {
+            left: 50%;
+            margin-left: -2px;
+          }
+        }
+        .timeline-block {
+          position: relative;
+          margin: 2em 0;
+        }
+        .timeline-block:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+        .timeline-block:first-child {
+          margin-top: 0;
+        }
+        .timeline-block:last-child {
+          margin-bottom: 0;
+        }
+        @media only screen and (min-width: 1170px) {
+          .timeline-block {
+            /* margin: 4em 0; */
+          }
+          .timeline-block:first-child {
+            margin-top: 0;
+          }
+          .timeline-block:last-child {
+            margin-bottom: 0;
+          }
+        }
+        .timeline-img {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+        }
+        .timeline-img img {
+          display: block;
+          width: 24px;
+          height: 24px;
+          position: relative;
+          left: 50%;
+          top: 50%;
+          margin-left: -12px;
+          margin-top: -12px;
+        }
+        .timeline-img.cd-picture {
+          background: #314148;
+        }
+        .timeline-img.cd-movie {
+          background: #c03b44;
+        }
+        .timeline-img.cd-location {
+          background: #f0ca45;
+        }
+        @media only screen and (min-width: 1170px) {
+          .timeline-img {
+            width: 20px;
+            height: 20px;
+            left: 50%;
+            margin-left: -10px;
+            /* Force Hardware Acceleration in WebKit */
+            background-color: #314148;
+            box-shadow: 1px 1px 1px rgba(66, 66, 66, 0.37);
+            border: 6px solid white;
+            -webkit-transform: translateZ(0);
+            -webkit-backface-visibility: hidden;
+          }
+          .cssanimations .timeline-img.is-hidden {
+            visibility: hidden;
+          }
+          .cssanimations .timeline-img.bounce-in {
+            visibility: visible;
+            -webkit-animation: cd-bounce-1 0.6s;
+            -moz-animation: cd-bounce-1 0.6s;
+            animation: cd-bounce-1 0.6s;
+          }
+        }
+        .timeline-content {
+          position: relative;
+          margin-left: 30px;
+          background: white;
+          border-radius: 0.25em;
+          padding: 1em;
+        }
+        .timeline-content:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+        .timeline-content h2 {
+          color: #777777;
+        }
+        .timeline-content p, .timeline-content .cd-read-more, .timeline-content .cd-date {
+          font-size: 13px;
+          font-size: 0.8125rem;
+        }
+        .timeline-content .cd-read-more, .timeline-content .cd-date {
+          display: inline-block;
+        }
+        .timeline-content p {
+          margin: 1em 0;
+          line-height: 1.6;
+        }
+        .timeline-content .cd-read-more {
+          float: right;
+          padding: .8em 1em;
+          background: #acb7c0;
+          color: white;
+          border-radius: 0.25em;
+        }
+        .no-touch .timeline-content .cd-read-more:hover {
+          background-color: #bac4cb;
+        }
+        .timeline-content .cd-date {
+          float: left;
+          padding: .8em 0;
+          opacity: .7;
+        }
+        .timeline-content::before {
+          content: '';
+          position: absolute;
+          top: 16px;
+          right: 100%;
+          height: 0;
+          width: 0;
+          border: 7px solid transparent;
+          border-right: 7px solid white;
+        }
+        @media {
+          .timeline-content h2 {
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 1px;
+            margin-top: 1px;
+          }
+          .timeline-content p {
+            font-size: 16px;
+            font-size: 1rem;
+            color: #777777;
+          }
+          .timeline-content .cd-read-more, .timeline-content .cd-date {
+            font-size: 14px;
+            font-size: 0.875rem;
+          }
+        }
+        @media only screen and (min-width: 1170px) {
+          .timeline-content {
+            margin-left: 0;
+            padding: 1.6em;
+            width: 45%;
+          }
+          .timeline-content::before {
+            top: 24px;
+            left: 100%;
+            border-color: transparent;
+            border-left-color: white;
+          }
+          .timeline-content .cd-read-more {
+            float: left;
+          }
+          .timeline-content .cd-date {
+            position: absolute;
+            width: 100%;
+            left: 118%;
+            top: -14px;
+            font-size: 1rem;
+            text-transform: uppercase;
+            font-weight: 800;
+          }
+          .timeline-block:nth-child(even) .timeline-content {
+            float: right;
+          }
+          .timeline-block:nth-child(even) .timeline-content::before {
+            top: 24px;
+            left: auto;
+            right: 100%;
+            border-color: transparent;
+            border-right-color: white;
+          }
+          .timeline-block:nth-child(even) .timeline-content .cd-read-more {
+            float: right;
+          }
+          .timeline-block:nth-child(even) .timeline-content .cd-date {
+            left: auto;
+            right: 122%;
+            text-align: right;
+          }
+        }
+        
+        .big-icon{
+          --iron-icon-height: 64px;
+          --iron-icon-width: 64px;
+          padding:12px;
+        }
+
+        .progress .determinate{
+              background-color: #00e676!important;
+        }
+    </style>
+
+    <canvas id="canvas" style="display:none"></canvas>
+
+    <div class="card">
+      <div class="card-content">
+        <h1 style="color: #383838;text-transform: uppercase;font-family:roboto-thin!important; font-weight:normal;margin: 0;font-size: 3em;"  class="grey-text text-darken-2 flow-text">About</h1>
+        <div class="row" style="margin-top:30px;">
+          <div class="col m4 s12 center">
+            <div class="profile-pic wow fadeInUp animated" data-wow-duration="1.2s" style="visibility: visible; animation-duration: 1.2s; animation-name: fadeInUp;">
+              <img class="responsive-img z-depth-1" src="https://media.licdn.com/mpr/mpr/shrinknp_400_400/p/3/005/0ae/119/39a93e4.jpg">
+            </div>
+          </div>
+          <div class="col m4 s12" style="padding-right:60px;">
+            <div class="info">
+              <h6><strong>Name: </strong>Chuy Cepeda</h6>
+              <h6><strong>Age: </strong>31</h6>
+              <h6><strong>Mob: </strong>+52 (1) 8115778648, jesus.s.cepeda (skype)</h6>
+              <h6><strong>Email: </strong>jesus.cepeda@onesmart.tech</h6>
+              <h6><strong>Address: </strong>66220, San Pedro, Mexico</h6>
+              <h6><strong>Interests: </strong>Impact and transcendence in the crossroads of technology, people and systems' innovation.</h6>
+            </div>
+          </div>
+          <div class="col m4 s12">
+            <div class="about-me">
+              <p><span>Who am i?</span></p>
+              <p class="small-para" style="font-family:roboto-light">I'm Chuy Cepeda from Mexico, I'm a civic technology entrepreneur, full-stack developer/integrator and cloud enthusiast. <br><br>I'm committed to help small and large businesses, educational institutions and government agencies to become more productive, mobile and collaborative.</a></p>
+              <br>
+              <div class="col s10 offset-s1">
+                <a href="https://www.facebook.com/chuycepeda"><img src="/images/facebook.png" alt="" class="responsive-img col s2 offset-s1"></a>
+                <a href="https://twitter.com/chuycepeda"><img src="/images/twitter.png" alt="" class="responsive-img col s2"></a>
+                <a href="https://www.linkedin.com/in/jscepedab"><img src="/images/linkedin.png" alt="" class="responsive-img col s2"></a>
+                <a href="https://github.com/chuycepeda"><img src="/images/github.png" alt="" class="responsive-img col s2"></a>
+
+              </div>
+            </div>
+          </div>         
+        </div>
+        <div class="row center">
+          <div class="download">        
+            <a class="waves-effect waves-light btn primary-btn" style="background-color: #314148;" href="http://mboilerplate.appspot.com/blobstore/serve/AMIfv96C_pRoF4_WbfAPOdZcgYe-gTuKQ0vvNoGKBSI25Hl9Dcfu8Lr8TUKKeOPLFoH4V9GpM9OFoa3NO0lH6bkHpBWkrneWM6K1AMwyooK42duhhSOL2dqPj6D1PedqOMMabsxCXzLAn51XPg6PbbGG3dYvC9UoHtrJP-Wl7JD2UmX6se0UoFU" target="_blank">resume</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="background-color:#314148;">
+      <section id="skills" class="skills scrollspy">
+        <div class="container">
+          <div class="row">
+            <div class="headline">
+              <h1 style="font-family:roboto-thin!important; font-weight:normal">Skills</h1>
+            </div>
+            <div class="col s12">
+              <p class="white-text small-para">Coming from a mobile robotics and artificial intelligence future, I became passionate for empowering people with technology. Since then, my life's about delivering technological tools to provide voice and awareness through creative deployments, now with over 5 years of experience in the following areas:</p>
+            </div>
+          </div>
+          <div class="row progress-bars">
+
+            <div class="col s12">
+              <div class="row" style="margin-bottom:35px;">
+                <div class="col s12 m2 offset-m3">
+                  <paper-icon-button icon="social:whatshot" title="legend" class="g"></paper-icon-button><span class="white-text">Daily</span>
+                </div>
+                <div class="col s12 m2">
+                  <paper-icon-button icon="social:whatshot" title="legend" class="b"></paper-icon-button><span class="white-text">Weekly</span>
+                </div>
+                <div class="col s12 m2">
+                  <paper-icon-button icon="social:whatshot" title="legend" class="r"></paper-icon-button><span class="white-text">Hobbist</span>
+                </div>
+              </div>
+
+              <div class="col s10 offset-s1 m6 white-text">
+                <div class="row center">
+                  <!-- <img src="../images/civics.png" alt="" class="col s6 offset-s3 responsive-img" style="border-radius:40px;    -webkit-filter: grayscale(100%)"> -->
+
+                  <div class="col s4 offset-s4 center">
+                    <iron-icon icon="social:location-city" class="white-text big-icon" ></iron-icon>
+                    <br>
+                    <span class="white-text" style="text-transform:uppercase; font-family:roboto-thin">Civic tech</span>
+                  </div>
+                </div>
+                <div class="progress-bar col s12">
+                  <label for="">Visualization and mapping - Geospatial analysis</label>
+                  <paper-progress value="100" class="col s10 offset-s1 g" style="margin-left:-10px;margin-bottom:8px;"></paper-progress>                  
+                </div>
+                <div class="progress-bar col s12">
+                  <label for="">Open Governance - Participatory Mechanisms</label>
+                  <paper-progress value="100" class="col s10 offset-s1 g" style="margin-left:-10px;margin-bottom:8px;"></paper-progress>                  
+                </div>
+                <div class="progress-bar col s12">
+                  <label for="">Data collection - Digitization and Mobility</label>
+                  <paper-progress value="100" class="col s10 offset-s1 g" style="margin-left:-10px;margin-bottom:8px;"></paper-progress>                  
+                </div>
+                <div class="progress-bar col s12">
+                  <label for="">Data openness - Transparency services</label>
+                  <paper-progress value="100" class="col s10 offset-s1 g" style="margin-left:-10px;margin-bottom:8px;"></paper-progress>                  
+                </div>
+                <div class="progress-bar col s12">
+                  <label for="">Data analysis - Actionable Insights</label>
+                  <paper-progress value="100" class="col s10 offset-s1 b" style="margin-left:-10px;margin-bottom:8px;"></paper-progress>                  
+                </div>
+                <div class="progress-bar col s12">
+                  <label for="">Shared technological frameworks - APIs</label>
+                  <paper-progress value="100" class="col s10 offset-s1 r" style="margin-left:-10px;margin-bottom:8px;"></paper-progress>                  
+                </div>
+              </div>
+
+              <div class="col s10 offset-s1 m6 white-text">
+                <div class="row center">
+                  <!-- <img src="../images/skills.png" alt="" class="col s6 offset-s3 responsive-img" style="border-radius:40px;    -webkit-filter: grayscale(100%)"> -->
+                  <div class="col s4 offset-s4 center">
+                    <iron-icon icon="image:center-focus-strong" class="white-text big-icon" ></iron-icon>
+                    <br>
+                    <span class="white-text" style="text-transform:uppercase; font-family:roboto-thin">Core Skill</span>
+                  </div>
+                </div>
+                <div class="progress-bar col s12">
+                  <label for="">Lean entrepreneurship and Agile Dev</label>
+                  <paper-progress value="100" class="col s10 offset-s1 g" style="margin-left:-10px;margin-bottom:8px;"></paper-progress>                  
+                </div>
+                <div class="progress-bar col s12">
+                  <label for="">Cloud development and Google APIs</label>
+                  <paper-progress value="100" class="col s10 offset-s1 g" style="margin-left:-10px;margin-bottom:8px;"></paper-progress>                  
+                </div>
+                <div class="progress-bar col s12">
+                  <label for="">Cloud analytics and data visualization</label>
+                  <paper-progress value="100" class="col s10 offset-s1 g" style="margin-left:-10px;margin-bottom:8px;"></paper-progress>                  
+                </div>
+                <div class="progress-bar col s12">
+                  <label for="">Research and development</label>
+                  <paper-progress value="100" class="col s10 offset-s1 b" style="margin-left:-10px;margin-bottom:8px;"></paper-progress>                  
+                </div>
+                <div class="progress-bar col s12">
+                  <label for="">Machine learning and AI</label>
+                  <paper-progress value="100" class="col s10 offset-s1 r" style="margin-left:-10px;margin-bottom:8px;"></paper-progress>                  
+                </div>
+                <div class="progress-bar col s12">
+                  <label for="">Robotics and computer vision</label>
+                  <paper-progress value="100" class="col s10 offset-s1 r" style="margin-left:-10px;margin-bottom:8px;"></paper-progress>                  
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="row" >
+                <div class="col s4 offset-s4 center">
+                  <iron-icon icon="hardware:laptop-mac" class="white-text big-icon" style="margin-top:30px;"></iron-icon>
+                  <br>
+                  <span class="white-text" style="text-transform:uppercase; font-family:roboto-thin">Tech stack</span>
+                </div>
+              </div>
+              <div class="col s12 rating">
+                <div class="col s10 offset-s1 m6">
+                  <p class="col s12 center white-text">BACKEND</p>
+                  <div class="rate">
+                    <div class="rate-item">
+                      <p>Google App Engine, Python, WebApp2, noSQL (NDB), cloudSQL, PostgreSQL, PostGIS, BigQuery, Cloud Endpoints</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col s10 offset-s1 m6">
+                  <p class="col s12 center white-text">FRONTEND</p>
+                  <div class="rate">
+                    <div class="rate-item">
+                      <p>Polymer, MaterializeCSS, Javascript, HTML5, Google Maps, Cordova, CartoDB, D3.js, Chartist, Chart.js & Highcharts</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="card">
+      <section id="exp" class="exp scrollspy">
+        <div class="container">
+          <div class="row">
+            <div class="headline">
+              <h1 style="font-family:roboto-thin!important; font-weight:normal">timeline</h1>              
+              <p class="small-para">My goal is to generate financial rewards by helping to connect people, optimize the way we govern, and enable a more informed learning and decision-making. I want to innovate systems and change cities, companies and communities for the better. This is my trajectory.</p>
+            </div>
+          </div>
+          <div class="row">
+              <p class="col s12 m6 offset-m3" style="margin-left:24px; font-family:roboto-thin;">Search: <input value="{{searchString::input}}"></p>
+          </div>
+          <!-- timeline -->
+          <div class="row">
+            <div class="center">
+              <h6>experiences</h6>
+            </div>
+            <section id="timeline" class="cd-container">
+              <template is="dom-repeat" items="{{blocks}}" filter="{{computeFilter(searchString)}}">
+                <div class="timeline-block wow animated" data-wow-duration="1.2s" style="visibility: visible; animation-duration: 1.2s;">
+                  <div class="timeline-img"></div>
+                  <div class="timeline-content z-depth-1 hoverable">
+                    <div class="row">
+                      <div class="col s12 center"><img src="{{item.image}}" class="responsive-img" alt="block image" style="-webkit-filter:grayscale(100%);"></div>
+                    </div>
+                    <h2><iron-icon icon="{{item.icon}}" style="margin-right:15px;"></iron-icon>{{item.title}}</h2>
+                    <em>{{item.subtitle}}</em>
+                    <p>{{item.description}}</p>
+                    <a href="{{item.link}}" class="waves-effect waves-light btn primary-btn">Read more</a>
+                    <span class="cd-date">{{item.date}}</span>
+                  </div>
+                </div>
+              </template>
+
+            </section>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </template>
+  
+  <script>    
+
+    Polymer({
+
+      is: 'my-about',
+      properties: {
+          blocks: {
+            type: Array,
+            notify: true,
+          },          
+        },
+      computeFilter: function(string) {
+          if (!string) {
+            return null;
+          } else {
+            string = string.toLowerCase();
+            return function(block) {
+              var title = block.title.toLowerCase();
+              var subtitle = block.subtitle.toLowerCase();
+              var description = block.description.toLowerCase();
+              var date = block.date.toLowerCase();
+              return (title.indexOf(string) != -1 ||
+                  subtitle.indexOf(string) != -1 ||
+                  description.indexOf(string) != -1 ||
+                  date.indexOf(string) != -1);
+            };
+          }
+        },
+      ready: function() {
+        this.async(function() {
+            // console.log('attached');
+            var opts = {
+              count: 1, //Increases the spawn rate
+              size: 50, //Minimal is one
+              sizeRandom: 10, //Amount of pixels it can be randomed by
+              sparkLife: 0.1, //Decreases the sparks life
+              spawnOpacity: 1, //Sparks will spawn at this opacity
+            
+              //must be RGBA. alpha stands for opacity, usually 1
+              //color: "rgba(39, 173, 96, alpha)" //The color of sparks.
+              color: "rgba(49, 65, 72, alpha)" //The color of sparks.
+            },
+
+            canvasBody = this.shadowRoot.querySelector('#canvas'),
+            canvas = canvasBody.getContext("2d"),
+            w = canvasBody.width = window.innerWidth,
+            h = canvasBody.height = window.innerHeight;
+
+            function anim() {
+              setTimeout(function() {
+                window.requestAnimationFrame(anim)
+              }, 1000 / 30 ) //Setting the FPS by dividing the one second by <frames>
+              step();
+            }
+
+            anim() //Calling the animation function
+
+            function step() {
+              var fillColor = opts.color.replace("alpha", opts.spawnOpacity);
+              canvas.fillStyle = fillColor;
+              for (var i = 0; i < Math.round(opts.count); i++) {
+                var random = Math.random() * opts.sizeRandom;
+                canvas.fillRect(-(opts.size/2) + Math.random() * w, -(opts.size/2) + Math.random() * h, opts.size + random, opts.size + random)
+              }
+              canvas.fillStyle = "rgba(238,238,238," + opts.sparkLife + ")"
+              canvas.fillRect(0, 0, w, h) 
+            }
+        });
+        this.blocks = [
+        {
+          'image': '../images/ost.png',
+          'icon': 'icons:flight-takeoff',
+          'title': 'Co-founded',
+          'subtitle': 'OneSmart Technology SA de CV',
+          'description': 'A company committed to help small and large businesses, educational institutions, nonprofits and government agencies to work smarter.',
+          'link': 'http://onesmart.tech',
+          'date': 'May the 4th, 2016'
+        },
+        {
+          'image': '../images/usocial.png',
+          'icon': 'icons:cloud-upload',
+          'title': 'Deployed',
+          'subtitle': 'Social Maps, a world of emotions',
+          'description': 'As an experimental instance of MBoilerplate, it\'s a digital tool that allows citizens to express their feelings and opinions about the city and its urban environment.',
+          'link': 'http://usocialmaps.com',
+          'date': 'Dec 2015'
+        },
+        {
+          'image': '../images/ael.png',
+          'icon': 'icons:cloud-upload',
+          'title': 'Deployed',
+          'subtitle': 'SmartUNO, a cloud-based tool for the modern cities',
+          'description': 'As the key product of OneSmart.City, we deployed the first instance of our public sector, SaaS masterpiece for digitization and smarter governance.',
+          'link': 'http://onesmart.city',
+          'date': 'Nov 2015'
+        },
+        {
+          'image': '../images/hacker.jpg',
+          'icon': 'social:mood-bad',
+          'title': 'Turned down',
+          'subtitle': 'Facebook',
+          'description': 'After a long process of interviews and prep I got into Facebook\'s facilities just to be described as a smart creative, but not what they were looking for.',
+          'link': 'https://www.facebook.com/careers/',
+          'date': 'Oct 2015'
+        },
+        {
+          'image': '../images/wef.jpg',
+          'icon': 'icons:card-membership',
+          'title': 'Nominated',
+          'subtitle': 'World Economic Forum New Champions 2015',
+          'description': 'I was chosen as 1 of the 40 WEF\'s New Champions of 2015 as a potential leader to chart a new course for global growth, fostering technological progress.',
+          'link': 'http://onesmart.city/blog/5741031244955648/',
+          'date': 'Sep 2015'
+        },
+        {
+          'image': '../images/mboilerplate.png',
+          'icon': 'icons:cloud-upload',
+          'title': 'Deployed',
+          'subtitle': 'M Boilerplate, a framework for powerful web apps and mobile backends',
+          'description': 'In the urge to pivot fast, we built MBoilerplate, a modern responsive frontend and backend for the Google App Engine. It enables us to deploy instant web applications that are scalability-ready at the cheapest cloud costs.',
+          'link': 'http://mboilerplate.appspot.com',
+          'date': 'Jun 2015'
+        },
+        {
+          'image': '../images/invictus.png',
+          'icon': 'icons:flight-takeoff',
+          'title': 'Deployed and Co-founded',
+          'subtitle': 'Invictus SAPI de CV',
+          'description': 'A company committed to help Mexico\'s population to understand and reduce their spending on electricity bills and its environmental impact. After a year, pivoting took the company away from a cloud-based tool and I ceased my participation.',
+          'link': 'http://mihogar.invictus.mx',
+          'date': 'Sep 2014'
+        },
+        {
+          'image': '../images/eric.jpg',
+          'icon': 'icons:card-membership',
+          'title': 'Nominated',
+          'subtitle': 'Awardee of Eric Schmidt\'s New Digital Age Grants',
+          'description': 'Tehuan was seen by Eric Schmidt as a very innovative and unique work to solve some of society\'s most pressing problems.',
+          'link': 'http://www.cic.mx/google-executive-chairman-eric-schmidt-awards-centro-de-integracion-ciudadana-a-new-digital-age-grant/',
+          'date': 'Mar 2014'
+        },
+        {
+          'image': '../images/data.png',
+          'icon': 'icons:cloud-upload',
+          'title': 'Deployed',
+          'subtitle': 'data.cic.mx',
+          'description': 'nspired in NYC open data portal, I was able to implement an instance of Socrata\'s open data portal as a Latin-American pioneer platform for data transparency.',
+          'link': 'http://data.cic.mx',
+          'date': 'Nov 2013'
+        },
+        {
+          'image': '../images/tehuan.png',
+          'icon': 'icons:cloud-upload',
+          'title': 'Deployed',
+          'subtitle': 'Tehuan 3.0',
+          'description': 'Even though it\'s a clear example of what paralysis of choice produces in human brain, at that time it was the best example of geospatial data collection and analysis. It\'s still working with no code updates in 3 years ;).',
+          'link': 'http://tehuan.cic.mx',
+          'date': 'Aug 2013'
+        },
+        {
+          'image': '../images/thomas.jpg',
+          'icon': 'icons:search',
+          'title': 'Spotted',
+          'subtitle': 'Thomas Friedman, New York Times',
+          'description': 'Team at CIC was doing so great that New York Times posted an article by Thomas Friedman called "How Mexico got back in the game", which referred CIC\'s participatory mechanisms as a key for \'democratizing democracy\'.',
+          'link': 'http://www.nytimes.com/2013/02/24/opinion/sunday/friedman-how-mexico-got-back-in-the-game.html?_r=0',
+          'date': 'Feb 2013'
+        },
+        {
+          'image': '../images/phd1.png',
+          'icon': 'social:school',
+          'title': 'PhD Degree',
+          'subtitle': 'ITESM, Campus Monterrey',
+          'description': 'Obtained my Doctor of Philosophy Degree with major in Robotics and Artificial Intelligence. If you wanna take a peek at my dissertation you can do it online.',
+          'link': 'http://www.slideshare.net/chuycepedaslideshare/phd-thesis-coordination-of-multiple-robotic-agents-for-disaster-and-emergency-response?ref=https://www.linkedin.com/',
+          'date': 'Dec 2012'
+        },
+        {
+          'image': '../images/cic.png',
+          'icon': 'icons:work',
+          'title': 'CTO',
+          'subtitle': 'CIC, Center for Citizen Integration',
+          'description': 'Officially started the tech department at CIC, creating a team and coding a series of technological platforms to promote citizen participation, smarter governance, open data and distributed responsibilities. Masterpiece project was called Tehuan.',
+          'link': 'http://www.cic.mx/#reportes',
+          'date': 'Sep 2012'
+        }
+        ]
+      }
+
+    });
+
+  </script>
+
+</dom-module>

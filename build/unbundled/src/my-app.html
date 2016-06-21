@@ -1,0 +1,78 @@
+<html><head><link rel="import" href="../elements/elements.html">
+
+</head><body><dom-module id="my-app">
+  <template>    
+    <style>:host{display:block;--app-primary-color:#314148;--app-secondary-color:#314148;}app-header{background-color:var(--app-primary-color);color:#fff;--app-header-background-rear-layer:{background-color:#314148;};--app-header-background-front-layer:{background-color:#314148;};--app-header-shadow:{box-shadow:inset 0px 5px 2px -3px rgba(0, 0, 0, 0.2);};}app-header paper-icon-button{--paper-icon-button-ink-color:white;}.drawer-list{margin:0 20px;}.drawer-list a{display:block;padding:0 16px;line-height:40px;text-decoration:none;color:var(--app-secondary-color);}.drawer-list a.iron-selected{color:black;font-weight:bold;}.drawer-list a.subroute{padding-left:32px;}.avatar-container{position:relative;border:2px solid #314148;border-radius:50%;height:90px;padding:2px;width:90px;margin:20px auto;}.avatar-container.recipe-app{background-image:url('https://pbs.twimg.com/profile_images/599064269930438657/0BThi_ge_400x400.jpg');background-size:cover;border-radius:50%;height:110px;width:110px;}#contentContainer{border-bottom:2px solid #EAEAEA;padding-bottom:85px;padding-top:85px;position:relative;width:100%;height:100%;}iron-icon{padding:12px;}iron-selector a{font-family:roboto-light;}</style>        
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
+
+    
+    <app-drawer-layout fullbleed=""> 
+
+      
+      <app-drawer>
+        <app-toolbar style="margin-bottom:85px">
+          <div id="contentContainer" class="style-scope app-header">
+                  <div class="avatar-container style-scope recipe-app">
+                    <div class="image style-scope recipe-app"></div>
+                  </div>
+          </div>
+        </app-toolbar>
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">        
+          <a name="about" href="/about">
+            <iron-icon icon="social:mood"></iron-icon>
+            <span>About</span>
+          </a>
+
+          <a name="bookshelf" href="/bookshelf">
+            <iron-icon icon="maps:local-library"></iron-icon>
+            <span>Bookshelf</span>
+          </a>
+
+          <a name="afk" href="/afk">
+            <iron-icon icon="image:nature-people"></iron-icon>
+            <span>AFK</span>
+          </a>
+
+          <a name="labs" href="/labs">
+            <iron-icon icon="hardware:videogame-asset"></iron-icon>
+            <span>Labs</span>
+          </a>
+
+        </iron-selector>
+      </app-drawer>
+
+      
+      <app-header-layout has-scrolling-region="">
+
+        
+        <app-header fixed="" condenses="" effects="material" style="height:40vh; background: url('../images/code.jpg')">
+          <app-toolbar>
+              <paper-icon-button icon="menu" drawer-toggle=""></paper-icon-button>
+              <h4 condensed-title="" style="font-family:roboto-thin; font-weight:normal">@<em>[[page]]</em> section...</h4>
+          </app-toolbar>
+          <app-toolbar>
+              <h1 title="" style="font-family:roboto-thin; font-weight:normal; width:100%; text-align:center">Welcome, I'm <br><em>Chuy Cepeda</em></h1>
+          </app-toolbar>
+        </app-header>
+        
+        
+        <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+          <my-about name="about"></my-about>
+          <my-bookshelf name="bookshelf"></my-bookshelf>
+          <my-afk name="afk"></my-afk>
+          <my-labs name="labs"></my-labs>
+        </iron-pages>
+
+      </app-header-layout>      
+
+    </app-drawer-layout>
+
+  </template>
+
+
+
+  <script>Polymer({is:"my-app",properties:{page:{type:String,reflectToAttribute:!0,observer:"_pageChanged"}},observers:["_routePageChanged(routeData.page)"],_routePageChanged:function(e){this.page=e||"about"},_pageChanged:function(e){this.importHref(this.resolveUrl("my-"+e+".html"),null,null,!0)}});</script>
+
+</dom-module>
+</body></html>

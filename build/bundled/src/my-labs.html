@@ -1,0 +1,101 @@
+<html><head><meta charset="UTF-8"><link rel="import" href="my-app.html"></head><body><dom-module id="my-labs">
+
+  <template>
+
+    <style include="shared-styles"></style> 
+    <style>:host{display:block;padding:10px;}.card{box-shadow:0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);padding:16px;margin:24px;border-radius:5px;background-color:#fff;color:#757575;display:flex;justify-content:center;overflow:hidden;margin:0;}.circle{display:inline-block;height:64px;width:64px;border-radius:50%;background:#ddd;line-height:64px;font-size:30px;color:#555;text-align:center;}h1{font-size:22px;margin:16px 0;color:#212121;}h3{font-family:roboto-thin;}[type='checkbox'] + label{align-self:center;position:relative;color:darkgrey;font-size:2em;cursor:pointer;}[type='checkbox']:checked + label{will-change:font-size;animation:heart 1s cubic-bezier(0.17, 0.89, 0.32, 1.49);}[type='checkbox']:checked.red  + label{color:#e2264d;}[type='checkbox']:checked.yellow  + label{color:#D1A616;}[type='checkbox']:checked.green  + label{color:#00FF00;}@keyframes heart{0%, 10%{font-size:0;}}canvas{position:absolute;top:124px;left:0;right:0;}</style>
+    
+
+    <div class="container">
+      <div class="section">
+        <div class="row">
+          <div class="card">
+            <div class="row">
+              <div class="col s12 center">
+                  <h3>About this site</h3>              
+              </div>
+              <div class="col s12 m8 offset-m2">
+                    <span style="font-family:roboto-thin; margin-left: auto;left: auto;right: auto;float: left">
+                      You're experiencing a <a href="https://developers.google.com/web/progressive-web-apps/" style="padding: 0px;display: inline;line-height: normal">Progressive Web App</a> built with Polymer 1.0. 
+                      <br><br>
+                      Progressive Web Applications take advantage of new technologies to bring the best of mobile sites and native applications to users. They're reliable, fast, and engaging so you may have instant:
+                      <br>
+                      <br>                  
+                      - Component-based architecture using Polymer and web components.
+                      <br>
+                      - Responsive design using the app layout components.
+                      <br>
+                      - End-to-end Build Tooling (including Vulcanize)
+                      <br>
+                      - Unit testing with Web Component Tester
+                      <br>
+                      - Localization with app-localize-behavior.
+                      <br>
+                      - Turnkey support for local storage with app storage elements.
+                      <br>
+                      - Modular routing using the app-route elements.
+                      <br>
+                      - Offline caching as a progressive enhancement, using Platinum Service Worker Elements
+                      <br>
+                      - Super portable UI to Android and iOS using Cordova
+                      <br>
+                      - Build tooling to support serving your app unbundled for delivery over HTTP/2 with server push
+                      <br>
+                      - Build tooling to support serving your app bundled for delivery over HTTP/1
+                    </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="card">
+            <div class="row">
+              <div class="col s12 center">
+                <h3>Shaped, animated checkboxes</h3>              
+              </div>
+              <div class="col s4 center" style="padding-top:12px">
+                <input id="toggle" type="checkbox" class="red">
+                <label for="toggle">❤</label>
+              </div>
+              <div class="col s4 center" style="padding-top:12px">
+                <input id="toggle1" type="checkbox" class="yellow">
+                <label for="toggle1">★</label>
+              </div>
+              <div class="col s4 center" style="padding-top:12px">
+                <input id="toggle2" type="checkbox" class="green">
+                <label for="toggle2">☯</label>
+              </div>
+              <div class="col s4 center" style="padding-top:12px">
+                <input id="toggle3" type="checkbox" class="red">
+                <label for="toggle3">☀</label>
+              </div>
+              <div class="col s4 center" style="padding-top:12px">
+                <input id="toggle4" type="checkbox" class="yellow">
+                <label for="toggle4">☺</label>
+              </div>
+              <div class="col s4 center" style="padding-top:12px">
+                <input id="toggle5" type="checkbox" class="green">
+                <label for="toggle5">✿</label>
+              </div>
+            </div>
+          </div>
+        </div>   
+        <div class="row">
+          <div class="card" style="height:40vh; position: relative">
+            <div class="col s12 center">
+                <h3>Spawn background</h3>              
+            </div>
+            <div class="row">
+            <canvas id="canvas"></canvas>
+            </div>
+          </div>
+        </div>   
+       </div>
+     </div>
+
+  </template>
+
+  <script>Polymer({is:"my-labs",_dynamicBg:function(){function i(){setTimeout(function(){window.requestAnimationFrame(i)},1e3/30),a()}function a(){var i=n.color.replace("alpha",n.spawnOpacity);t.fillStyle=i;for(var a=0;a<Math.round(n.count);a++){var e=Math.random()*n.sizeRandom;t.fillRect(-(n.size/2)+Math.random()*o,-(n.size/2)+Math.random()*r,n.size+e,n.size+e)}t.fillStyle="rgba(255,255,255,"+n.sparkLife+")",t.fillRect(0,0,o,r)}var n={count:1,size:50,sizeRandom:10,sparkLife:.1,spawnOpacity:1,color:"rgba(39, 173, 96, alpha)"},e=this.shadowRoot.querySelector("#canvas"),t=e.getContext("2d"),o=e.width=window.innerWidth,r=e.height=window.innerHeight;i()},ready:function(){this._dynamicBg()}});</script>
+
+</dom-module>
+</body></html>

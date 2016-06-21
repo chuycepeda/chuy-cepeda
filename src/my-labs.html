@@ -1,0 +1,232 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="my-labs">
+
+  <template>
+
+    <style include="shared-styles"></style> 
+    <style>
+      :host {
+        display: block;
+        padding: 10px;
+      }
+      .card {
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        padding: 16px;
+        margin: 24px;
+        border-radius: 5px;
+        background-color: #fff;
+        color: #757575;
+         display: flex;
+        justify-content: center;
+        overflow: hidden;
+        margin: 0;
+      }
+      .circle {
+        display: inline-block;
+        height: 64px;
+        width: 64px;
+        border-radius: 50%;
+        background: #ddd;
+        line-height: 64px;
+        font-size: 30px;
+        color: #555;
+        text-align: center;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 16px 0;
+        color: #212121;
+      }
+      h3{
+        font-family: roboto-thin;
+      }
+
+      /*  HEART CHECKBOX */      
+      [type='checkbox'] + label {
+        align-self: center;
+        position: relative;
+        color: darkgrey;
+        font-size: 2em;
+        cursor: pointer;
+      }
+      [type='checkbox']:checked + label {
+        will-change: font-size;
+        animation: heart 1s cubic-bezier(0.17, 0.89, 0.32, 1.49);
+      }
+      [type='checkbox']:checked.red  + label {
+        color: #e2264d;
+      }
+      [type='checkbox']:checked.yellow  + label {
+        color: #D1A616;
+      }
+      [type='checkbox']:checked.green  + label {
+        color: #00FF00;
+      }
+
+      @keyframes heart {
+        0%, 10% {
+          font-size: 0;
+        }
+      }
+
+      /* Dynamic bg */
+      canvas {
+        position: absolute;
+        top: 124px;
+        left: 0;
+        right: 0;
+      }
+    </style>
+    
+
+    <div class="container">
+      <div class="section">
+        <div class="row">
+          <div class="card">
+            <div class="row">
+              <div class="col s12 center">
+                  <h3 >About this site</h3>              
+              </div>
+              <div class="col s12 m8 offset-m2">
+                    <span style="font-family:roboto-thin; margin-left: auto;left: auto;right: auto;float: left;">
+                      You're experiencing a <a href="https://developers.google.com/web/progressive-web-apps/" style="padding: 0px;display: inline;line-height: normal;">Progressive Web App</a> built with Polymer 1.0. 
+                      <br><br>
+                      Progressive Web Applications take advantage of new technologies to bring the best of mobile sites and native applications to users. They're reliable, fast, and engaging so you may have instant:
+                      <br>
+                      <br>                  
+                      - Component-based architecture using Polymer and web components.
+                      <br>
+                      - Responsive design using the app layout components.
+                      <br>
+                      - End-to-end Build Tooling (including Vulcanize)
+                      <br>
+                      - Unit testing with Web Component Tester
+                      <br>
+                      - Localization with app-localize-behavior.
+                      <br>
+                      - Turnkey support for local storage with app storage elements.
+                      <br>
+                      - Modular routing using the app-route elements.
+                      <br>
+                      - Offline caching as a progressive enhancement, using Platinum Service Worker Elements
+                      <br>
+                      - Super portable UI to Android and iOS using Cordova
+                      <br>
+                      - Build tooling to support serving your app unbundled for delivery over HTTP/2 with server push
+                      <br>
+                      - Build tooling to support serving your app bundled for delivery over HTTP/1
+                    </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="card">
+            <div class="row">
+              <div class="col s12 center">
+                <h3 >Shaped, animated checkboxes</h3>              
+              </div>
+              <div class="col s4 center" style="padding-top:12px">
+                <input id="toggle" type="checkbox" class="red" />
+                <label for="toggle">❤</label>
+              </div>
+              <div class="col s4 center" style="padding-top:12px">
+                <input id="toggle1" type="checkbox" class="yellow" />
+                <label for="toggle1">★</label>
+              </div>
+              <div class="col s4 center" style="padding-top:12px">
+                <input id="toggle2" type="checkbox" class="green" />
+                <label for="toggle2">☯</label>
+              </div>
+              <div class="col s4 center" style="padding-top:12px">
+                <input id="toggle3" type="checkbox" class="red" />
+                <label for="toggle3">☀</label>
+              </div>
+              <div class="col s4 center" style="padding-top:12px">
+                <input id="toggle4" type="checkbox" class="yellow" />
+                <label for="toggle4">☺</label>
+              </div>
+              <div class="col s4 center" style="padding-top:12px">
+                <input id="toggle5" type="checkbox" class="green" />
+                <label for="toggle5">✿</label>
+              </div>
+            </div>
+          </div>
+        </div>   
+        <div class="row">
+          <div class="card" style="height:40vh; position: relative">
+            <div class="col s12 center">
+                <h3 >Spawn background</h3>              
+            </div>
+            <div class="row">
+            <canvas id="canvas"></canvas>
+            </div>
+          </div>
+        </div>   
+       </div>
+     </div>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'my-labs',
+      _dynamicBg: function(){
+            var opts = {
+              count: 1, //Increases the spawn rate
+              size: 50, //Minimal is one
+              sizeRandom: 10, //Amount of pixels it can be randomed by
+              sparkLife: 0.1, //Decreases the sparks life
+              spawnOpacity: 1, //Sparks will spawn at this opacity
+            
+              //must be RGBA. alpha stands for opacity, usually 1
+              color: "rgba(39, 173, 96, alpha)" //The color of sparks.
+            },
+
+            canvasBody = this.shadowRoot.querySelector('#canvas'),
+            canvas = canvasBody.getContext("2d"),
+            w = canvasBody.width = window.innerWidth,
+            h = canvasBody.height = window.innerHeight;
+
+            function anim() {
+              setTimeout(function() {
+                window.requestAnimationFrame(anim)
+              }, 1000 / 30 ) //Setting the FPS by dividing the one second by <frames>
+              step();
+            }
+
+            anim() //Calling the animation function
+
+            function step() {
+              var fillColor = opts.color.replace("alpha", opts.spawnOpacity);
+              canvas.fillStyle = fillColor;
+              for (var i = 0; i < Math.round(opts.count); i++) {
+                var random = Math.random() * opts.sizeRandom;
+                canvas.fillRect(-(opts.size/2) + Math.random() * w, -(opts.size/2) + Math.random() * h, opts.size + random, opts.size + random)
+              }
+              canvas.fillStyle = "rgba(255,255,255," + opts.sparkLife + ")"
+              canvas.fillRect(0, 0, w, h) 
+            }
+      },
+      ready: function(){
+        this._dynamicBg();
+      }
+
+    });
+
+  </script>
+
+</dom-module>
