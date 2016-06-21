@@ -134,8 +134,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             return function(book) {
               var title = book.Title.toLowerCase();
               var author = book.Author.toLowerCase();
+              var description = book.Description.toLowerCase();
               return (title.indexOf(string) != -1 ||
-                  author.indexOf(string) != -1);
+                  author.indexOf(string) != -1 ||
+                  description.indexOf(string) != -1);
             };
           }
         },
