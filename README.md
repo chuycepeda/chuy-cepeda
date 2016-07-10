@@ -1,5 +1,7 @@
 Setup at: https://www.polymer-project.org/1.0/start/toolbox/set-up
 
+Running demo at: https://chuy-cepeda.appspot.com (served from Google App Engine)
+
 # Polymer App Toolbox - Drawer Template
 
 This template is a starting point for building apps using a drawer-based
