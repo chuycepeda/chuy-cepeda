@@ -81,11 +81,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       /* Dynamic bg */
-      canvas {
+      #canvas {
         position: absolute;
         top: 124px;
         left: 0;
         right: 0;
+      }
+
+      /*Blob bg*/
+      #canvas-two{
+        position: absolute;
+        -webkit-filter: url("#goo");
+        filter: url("#goo");
       }
     </style>
     
@@ -173,16 +180,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <canvas id="canvas"></canvas>
             </div>
           </div>
-        </div>   
+        </div> 
        </div>
      </div>
 
   </template>
 
   <script>
-
     Polymer({
-
       is: 'my-labs',
       _dynamicBg: function(){
             var opts = {
@@ -226,7 +231,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
     });
-
   </script>
 
 </dom-module>
