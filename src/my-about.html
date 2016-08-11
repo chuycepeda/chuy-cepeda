@@ -452,7 +452,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div class="col m4 s12">
             <div class="about-me">
               <p><span>Who am i?</span></p>
-              <p class="small-para" style="font-family:roboto-light">I'm Chuy Cepeda from Mexico, I'm a civic technology entrepreneur, full-stack developer/integrator and cloud enthusiast. <br><br>I'm committed to help small and large businesses, educational institutions and government agencies to become more productive, mobile and collaborative.</a></p>
+              <p class="small-para" style="font-family:roboto-light">I'm Chuy Cepeda from Mexico, I'm a civic technology entrepreneur, full-stack developer/integrator and cloud enthusiast. <br><br>I'm committed to help small and large businesses, educational institutions and government agencies to become more productive, mobile and collaborative. <br> <a class="grey-text lighten-2 right small" style="text-align:right; padding:35px; padding-bottom:20px;" href="http://mboilerplate.appspot.com/blobstore/serve/AMIfv96lmhGHpjJaASBl_RUkhfqelTUyzconI4avgAO3g-LhJK_VercEAOtyVqWoNusJ4kk3_w6i-t6NSMYzehX2pQpiwKBcgyZ43tGJRcjMmaC934JXVOAHRqRTLT0zGkDuJZBGm5TFTBDDkwKHCgJPeNVpObrTIb3_L5i0L3yYvblwAt9Qi_E" target="_blank">read more...</a></span></p>
               <br>
               <div class="col s10 offset-s1">
                 <a href="https://www.facebook.com/chuycepeda"><img src="/images/facebook.png" alt="" class="responsive-img col s2 offset-s1"></a>
@@ -624,7 +624,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <div class="timeline-img"></div>
                   <div class="timeline-content z-depth-1 hoverable">
                     <div class="row">
-                      <div class="col s12 center"><img src="{{item.image}}" class="responsive-img" alt="block image" style="-webkit-filter:grayscale(100%);"></div>
+                      <div class="col s12 center"><img src="{{item.image}}" class="responsive-img" alt="block image"></div>
                     </div>
                     <h2><iron-icon icon="{{item.icon}}" style="margin-right:15px;"></iron-icon>{{item.title}}</h2>
                     <em>{{item.subtitle}}</em>
@@ -713,6 +713,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
         this.blocks = [
         {
+          'image': '../images/tdb.png',
+          'icon': 'icons:cloud-upload',
+          'title': 'Deployed',
+          'subtitle': 'SmartUNO, a cloud-based tool for the modern cities',
+          'description': 'As the key product of OneSmart.City, we deployed the second instance of our public sector, SaaS masterpiece for digitization and smarter governance.',
+          'link': 'http://tdb.digital',
+          'date': 'Aug 2016'
+        },{
           'image': '../images/ost.png',
           'icon': 'icons:flight-takeoff',
           'title': 'Co-founded',
@@ -736,7 +744,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           'title': 'Deployed',
           'subtitle': 'SmartUNO, a cloud-based tool for the modern cities',
           'description': 'As the key product of OneSmart.City, we deployed the first instance of our public sector, SaaS masterpiece for digitization and smarter governance.',
-          'link': 'http://onesmart.city',
+          'link': 'http://www.alcaldeenlinea.com',
           'date': 'Nov 2015'
         },
         {
@@ -765,6 +773,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           'description': 'In the urge to pivot fast, we built MBoilerplate, a modern responsive frontend and backend for the Google App Engine. It enables us to deploy instant web applications that are scalability-ready at the cheapest cloud costs.',
           'link': 'http://mboilerplate.appspot.com',
           'date': 'Jun 2015'
+        },
+        {
+          'image': '../images/mexico.png',
+          'icon': 'icons:cloud-upload',
+          'title': 'Released Mexico @ CartoDB',
+          'subtitle': 'A free-to-use geospatial database of Mexico',
+          'description': 'In an intention to build a really easy to consume database of geospatial information in Mexico I created and made available mexico.carto.com. Multiple maps from our country can be downloaded in several formats and also are able to be consumed through friendly APIs.',
+          'link': 'https://mexico.carto.com',
+          'date': 'Oct 2014'
         },
         {
           'image': '../images/invictus.png',
