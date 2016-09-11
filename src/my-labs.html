@@ -294,7 +294,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         notify.requestPermission();
         
-        this.notification = function(text, body, img){
+        notification = function(text, body, img){
           notify.createNotification(text, {
             body: body,
             icon: img
@@ -386,11 +386,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             VERY_LIKELY: 4
           })[emotion]
         };
+        notification = function(text, body, img){
+          notify.createNotification(text, {
+            body: body,
+            icon: img
+          });
+        };
         pushNotification = function(text, body, img){
           notify.config({
             autoClose: 4000
           });
-          this.notification(text,body,img);
+          notification(text,body,img);
         };
         computeVision = function(source){
           console.log('computing vision analysis...')
