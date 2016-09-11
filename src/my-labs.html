@@ -96,7 +96,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     
-
     <div class="container">
       <div class="section">
         <div class="row">
@@ -181,14 +180,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </div>
           </div>
         </div> 
-       </div>
-     </div>
+        <div class="row">
+          <div class="card" style="min-height:40vh; position: relative">
+            <div class="col s12 center">
+                <h3 >Google NLP API</h3>              
+                <div class="row">
+                    <div class="input-field col s12">
+                        <paper-textarea id="nlp_input" label="Click submit or try your own text to see its magic!" value="Google, headquartered in Mountain View, unveiled the new Android phone at the Consumer Electronic Show.  Sundar Pichai said in his keynote that users love their new Android phones"></paper-textarea>
+                      <div class="input-field col s12">
+                            <a class="waves-effect waves-light brand-color white-text btn-large right" on-click="NLPGet" style="margin-right:12px;">Submit</a>                           
+                      </div>
+                    </div>
+                    <div class="row" id="response_div"></div>
+                </div>    
+            </div>
+          </div> 
+        </div>
+        <div class="row">
+          <div class="card" style="min-height:40vh; position: relative">
+            <div class="col s12 center">
+                <h3 >Google Vision API</h3>              
+                <div class="row">
+                  <div class="container">
+                    <div class="col s12">
+                      <div class="row" style="margin-bottom:20px;">
+                        <div class="input-field col s4 right">
+                            <button class="waves-effect waves-light green white-text btn-large" id="capture" on-click="startCapture">Capture
+                            </button>                           
+                        </div>
+                        <div class="input-field col s4 left">
+                            <button class="waves-effect waves-light red white-text btn-large" id="stop" on-click="stopCapture">Stop
+                            </button>                           
+                        </div>
+                      </div>
+                      <video autoplay id="video"></video>
+                      <img id="vimg" src="">
+                      <p id="b64" style="display:none;"></p>
+                      <canvas id="canvas_" style="display:none;" width="640" height="480"></canvas>
+                    </div>
+                  </div>
+                </div>    
+            </div>
+          </div> 
+        </div>
+      </div>
+    </div>
 
   </template>
+<script src="../scripts/desktop-notify.js"></script>
 
   <script>
     Polymer({
       is: 'my-labs',
+      localMediaStream: null,
+      notification: null,
       _dynamicBg: function(){
             var opts = {
               count: 1, //Increases the spawn rate
@@ -226,8 +271,205 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               canvas.fillRect(0, 0, w, h) 
             }
       },
+      componentToHex: function(){
+        var hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+      },
+      rgbToHex: function(r, g, b) {
+        return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+      },
       ready: function(){
         this._dynamicBg();
+
+        video = Polymer.dom(this.root).querySelector('#video');
+        canvas_ = Polymer.dom(this.root).querySelector('#canvas_');
+        ctx_ = canvas_.getContext('2d');
+        this.localMediaStream = null;
+        
+        navigator.webkitGetUserMedia({video: true}, function(stream) {
+          video.src = window.URL.createObjectURL(stream);
+          this.localMediaStream = stream;
+        }, function(){});
+
+
+        notify.requestPermission();
+        
+        this.notification = function(text, body, img){
+          notify.createNotification(text, {
+            body: body,
+            icon: img
+          });
+        };
+        
+      },
+      NLPGet: function(){
+        var value = Polymer.dom(this.root).querySelector('#nlp_input').value;
+        var response = Polymer.dom(this.root).querySelector('#response_div');
+        if (value != ''){
+          $.ajax({
+                  url: "https://language.googleapis.com/v1beta1/documents:analyzeEntities?key=AIzaSyDEw3s5ll9c3uFToZjMZSYtUWM0qboy8Vc",
+                  type: 'POST',
+                  contentType: "application/json; charset=utf-8",
+                  data: JSON.stringify({
+                    "document":{
+                      "type":"PLAIN_TEXT",
+                      "content": value
+                    },
+                    "encodingType":"UTF8"
+                  }) 
+          }).done(function(data) {
+            console.log(data);
+            var html = '<h5> The following entities have been detected (language: '+ data.language +'):</h5>';
+            for (var i=0, j=data.entities.length; i<j; i++){
+              html += '<p style="font-family:roboto-thin">"' + data.entities[i].name + '" interpreted as a ' + data.entities[i].type +' with a relevance among context of ' + data.entities[i].salience +'.</p>';
+            }
+            console.log(html);
+            response.innerHTML = html;
+
+            if (data.language == "en"){
+              $.ajax({
+                  url: "https://language.googleapis.com/v1beta1/documents:analyzeSentiment?key=AIzaSyDEw3s5ll9c3uFToZjMZSYtUWM0qboy8Vc",
+                  type: 'POST',
+                  contentType: "application/json; charset=utf-8",
+                  data: JSON.stringify({
+              "document":{
+                "type":"PLAIN_TEXT",
+                "content": value
+              }
+            }) 
+              }).done(function(data) {
+                console.log(data);
+                response.innerHTML += '<p style="font-family:roboto-black"> Sentiment detected has a magnitude of ' + data.documentSentiment.magnitude + ' with polarity of ' + data.documentSentiment.polarity + '.</p>';
+              });
+              
+              $.ajax({
+                  url: "https://language.googleapis.com/v1beta1/documents:annotateText?key=AIzaSyDEw3s5ll9c3uFToZjMZSYtUWM0qboy8Vc",
+                  type: 'POST',
+                  contentType: "application/json; charset=utf-8",
+                  data: JSON.stringify({
+              "document":{
+                "type":"PLAIN_TEXT",
+                "content": value
+              },
+              "features": {
+                "extractSyntax": true,
+              "extractEntities": true,
+              "extractDocumentSentiment": true,
+              },
+                "encodingType":"UTF8"
+            }) 
+              }).done(function(data) {
+                console.log(data);
+                response.innerHTML += '<p style="font-family:roboto-black"> Total sentences: ' + data.sentences.length + '.</p>';
+                response.innerHTML += '<p style="font-family:roboto-black"> Total entities: ' + data.entities.length + '.</p>';
+              });
+            }
+          });
+        }
+          else
+                Materialize.toast('<span class="toast-warning">Please add some value to process.</span>',4500);
+      },
+      startCapture: function(){
+        canvas = Polymer.dom(this.root).querySelector('#canvas_');
+        ctx = canvas.getContext('2d');
+        video = Polymer.dom(this.root).querySelector('#video');
+        vimg = Polymer.dom(this.root).querySelector('#vimg');
+        b64 = Polymer.dom(this.root).querySelector("#b64");
+        msg = Polymer.dom(this.root).querySelector('#msg');
+        response = Polymer.dom(this.root).querySelector("#response_div2");
+        convertEmotionInfoToNum = function(emotion) {
+          return ({
+            VERY_UNLIKELY: 0,
+            UNLIKELY: 1,
+            POSSIBLE: 2,
+            LIKELY: 3,
+            VERY_LIKELY: 4
+          })[emotion]
+        };
+        pushNotification = function(text, body, img){
+          notify.config({
+            autoClose: 4000
+          });
+          this.notification(text,body,img);
+        };
+        computeVision = function(source){
+          console.log('computing vision analysis...')
+          var value = b64.innerHTML.split(',')[1];
+          $.ajax({
+                  url: "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDJl2LYW2oRn1YuUOL6FHlEpHq0WP4n-3A",
+                  type: 'POST',
+                  contentType: "application/json; charset=utf-8",
+                  data: JSON.stringify({
+                    "requests": [{
+                  "image":{             
+                    "content": value
+                  },
+                  "features":[
+                    {"type": "TYPE_UNSPECIFIED"},
+                    {"type": "FACE_DETECTION"},
+                    {"type": "LANDMARK_DETECTION"},
+                    {"type": "LOGO_DETECTION"},
+                    {"type": "LABEL_DETECTION"},
+                    {"type": "TEXT_DETECTION"},
+                    {"type": "SAFE_SEARCH_DETECTION"},
+                    {"type": "IMAGE_PROPERTIES"}
+                  // TYPE_UNSPECIFIED Unspecified feature type.
+                  // FACE_DETECTION Run face detection.
+                  // LANDMARK_DETECTION Run landmark detection.
+                  // LOGO_DETECTION Run logo detection.
+                  // LABEL_DETECTION  Run label detection.
+                  // TEXT_DETECTION Run OCR.
+                  // SAFE_SEARCH_DETECTION  Run various computer vision models to compute image safe-search properties.
+                  // IMAGE_PROPERTIES Compute a set of properties about the image (such as the image's dominant colors).                
+                  ]
+                }
+              ]
+            }) 
+              }).done(function(data) {
+                if (source == 'from video'){
+                  $('#response').hide();
+                  if (data.responses[0].faceAnnotations){
+
+                    var dominant_mood = 'poker', max = 0;
+                    for (var i=0, j=data.responses[0].faceAnnotations.length; i<j; i++){
+                      //data.responses[0].faceAnnotations[i].detectionConfidence;
+                      //data.responses[0].faceAnnotations[i].landmarkingConfidence;
+                      max = convertEmotionInfoToNum(data.responses[0].faceAnnotations[i].angerLikelihood);
+                      dominant_mood = max > 0 ? 'anger' : dominant_mood;
+                      //data.responses[0].faceAnnotations[i].blurredLikelihood;
+                      //data.responses[0].faceAnnotations[i].headwearLikelihood;
+                      dominant_mood = convertEmotionInfoToNum(data.responses[0].faceAnnotations[i].joyLikelihood) > max ? 'joy' : dominant_mood;
+                      dominant_mood = convertEmotionInfoToNum(data.responses[0].faceAnnotations[i].sorrowLikelihood) > max ? 'sorrow' : dominant_mood;
+                      dominant_mood = convertEmotionInfoToNum(data.responses[0].faceAnnotations[i].surpriseLikelihood) > max ? 'surprise' : dominant_mood;
+                      //data.responses[0].faceAnnotations[i].underExposedLikelihood;
+
+                      pushNotification('Face detected !', 'It looks like '+ dominant_mood +' to me...', 'https://mboilerplate.appspot.com/default/materialize/images/moods/face-'+dominant_mood+'.png');
+                    }
+                  }else{
+                    pushNotification('oops !', 'we got no faces', 'none');
+                  }
+                }
+              }).error(function(data) {
+                console.log(data);
+                
+              });
+          };
+        timer = setInterval(function(){
+            if (this.localMediaStream) {
+              ctx.drawImage(video, 0, 0);
+              vimg.src = canvas.toDataURL('image/jpg');
+              b64.innerHTML = canvas.toDataURL('image/jpg');
+              computeVision('from video');
+            }
+
+        }, 3000);
+        var vimg = Polymer.dom(this.root).querySelector('#vimg');
+        $(vimg).show();
+      },
+      stopCapture: function(){
+        var vimg = Polymer.dom(this.root).querySelector('#vimg');
+        $(vimg).hide();
+        clearInterval(timer);
       }
 
     });

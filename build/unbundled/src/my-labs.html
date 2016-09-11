@@ -7,7 +7,6 @@
     <style include="shared-styles"></style> 
     <style>:host{display:block;padding:10px;}.card{box-shadow:0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);padding:16px;margin:24px;border-radius:5px;background-color:#fff;color:#757575;display:flex;justify-content:center;overflow:hidden;margin:0;}.circle{display:inline-block;height:64px;width:64px;border-radius:50%;background:#ddd;line-height:64px;font-size:30px;color:#555;text-align:center;}h1{font-size:22px;margin:16px 0;color:#212121;}h3{font-family:roboto-thin;}[type='checkbox'] + label{align-self:center;position:relative;color:darkgrey;font-size:2em;cursor:pointer;}[type='checkbox']:checked + label{will-change:font-size;animation:heart 1s cubic-bezier(0.17, 0.89, 0.32, 1.49);}[type='checkbox']:checked.red  + label{color:#e2264d;}[type='checkbox']:checked.yellow  + label{color:#D1A616;}[type='checkbox']:checked.green  + label{color:#00FF00;}@keyframes heart{0%, 10%{font-size:0;}}#canvas{position:absolute;top:124px;left:0;right:0;}#canvas-two{position:absolute;-webkit-filter:url("#goo");filter:url("#goo");}</style>
     
-
     <div class="container">
       <div class="section">
         <div class="row">
@@ -92,12 +91,56 @@
             </div>
           </div>
         </div> 
-       </div>
-     </div>
+        <div class="row">
+          <div class="card" style="min-height:40vh; position: relative">
+            <div class="col s12 center">
+                <h3>Google NLP API</h3>              
+                <div class="row">
+                    <div class="input-field col s12">
+                        <paper-textarea id="nlp_input" label="Click submit or try your own text to see its magic!" value="Google, headquartered in Mountain View, unveiled the new Android phone at the Consumer Electronic Show.  Sundar Pichai said in his keynote that users love their new Android phones"></paper-textarea>
+                      <div class="input-field col s12">
+                            <a class="waves-effect waves-light brand-color white-text btn-large right" on-click="NLPGet" style="margin-right:12px">Submit</a>                           
+                      </div>
+                    </div>
+                    <div class="row" id="response_div"></div>
+                </div>    
+            </div>
+          </div> 
+        </div>
+        <div class="row">
+          <div class="card" style="min-height:40vh; position: relative">
+            <div class="col s12 center">
+                <h3>Google Vision API</h3>              
+                <div class="row">
+                  <div class="container">
+                    <div class="col s12">
+                      <div class="row" style="margin-bottom:20px">
+                        <div class="input-field col s4 right">
+                            <button class="waves-effect waves-light green white-text btn-large" id="capture" on-click="startCapture">Capture
+                            </button>                           
+                        </div>
+                        <div class="input-field col s4 left">
+                            <button class="waves-effect waves-light red white-text btn-large" id="stop" on-click="stopCapture">Stop
+                            </button>                           
+                        </div>
+                      </div>
+                      <video autoplay="" id="video"></video>
+                      <img id="vimg" src="">
+                      <p id="b64" style="display:none"></p>
+                      <canvas id="canvas_" style="display:none" width="640" height="480"></canvas>
+                    </div>
+                  </div>
+                </div>    
+            </div>
+          </div> 
+        </div>
+      </div>
+    </div>
 
   </template>
+<script src="../scripts/desktop-notify.js"></script>
 
-  <script>Polymer({is:"my-labs",_dynamicBg:function(){function i(){setTimeout(function(){window.requestAnimationFrame(i)},1e3/30),a()}function a(){var i=n.color.replace("alpha",n.spawnOpacity);t.fillStyle=i;for(var a=0;a<Math.round(n.count);a++){var e=Math.random()*n.sizeRandom;t.fillRect(-(n.size/2)+Math.random()*o,-(n.size/2)+Math.random()*r,n.size+e,n.size+e)}t.fillStyle="rgba(255,255,255,"+n.sparkLife+")",t.fillRect(0,0,o,r)}var n={count:1,size:50,sizeRandom:10,sparkLife:.1,spawnOpacity:1,color:"rgba(39, 173, 96, alpha)"},e=this.shadowRoot.querySelector("#canvas"),t=e.getContext("2d"),o=e.width=window.innerWidth,r=e.height=window.innerHeight;i()},ready:function(){this._dynamicBg()}});</script>
+  <script>Polymer({is:"my-labs",localMediaStream:null,notification:null,_dynamicBg:function(){function e(){setTimeout(function(){window.requestAnimationFrame(e)},1e3/30),o()}function o(){var e=t.color.replace("alpha",t.spawnOpacity);i.fillStyle=e;for(var o=0;o<Math.round(t.count);o++){var n=Math.random()*t.sizeRandom;i.fillRect(-(t.size/2)+Math.random()*a,-(t.size/2)+Math.random()*s,t.size+n,t.size+n)}i.fillStyle="rgba(255,255,255,"+t.sparkLife+")",i.fillRect(0,0,a,s)}var t={count:1,size:50,sizeRandom:10,sparkLife:.1,spawnOpacity:1,color:"rgba(39, 173, 96, alpha)"},n=this.shadowRoot.querySelector("#canvas"),i=n.getContext("2d"),a=n.width=window.innerWidth,s=n.height=window.innerHeight;e()},componentToHex:function(){var e=c.toString(16);return 1==e.length?"0"+e:e},rgbToHex:function(e,o,t){return"#"+componentToHex(e)+componentToHex(o)+componentToHex(t)},ready:function(){this._dynamicBg(),video=Polymer.dom(this.root).querySelector("#video"),canvas_=Polymer.dom(this.root).querySelector("#canvas_"),ctx_=canvas_.getContext("2d"),this.localMediaStream=null,navigator.webkitGetUserMedia({video:!0},function(e){video.src=window.URL.createObjectURL(e),this.localMediaStream=e},function(){}),notify.requestPermission(),this.notification=function(e,o,t){notify.createNotification(e,{body:o,icon:t})}},NLPGet:function(){var e=Polymer.dom(this.root).querySelector("#nlp_input").value,o=Polymer.dom(this.root).querySelector("#response_div");""!=e?$.ajax({url:"https://language.googleapis.com/v1beta1/documents:analyzeEntities?key=AIzaSyDEw3s5ll9c3uFToZjMZSYtUWM0qboy8Vc",type:"POST",contentType:"application/json; charset=utf-8",data:JSON.stringify({document:{type:"PLAIN_TEXT",content:e},encodingType:"UTF8"})}).done(function(t){console.log(t);for(var n="<h5> The following entities have been detected (language: "+t.language+"):</h5>",i=0,a=t.entities.length;a>i;i++)n+='<p style="font-family:roboto-thin">"'+t.entities[i].name+'" interpreted as a '+t.entities[i].type+" with a relevance among context of "+t.entities[i].salience+".</p>";console.log(n),o.innerHTML=n,"en"==t.language&&($.ajax({url:"https://language.googleapis.com/v1beta1/documents:analyzeSentiment?key=AIzaSyDEw3s5ll9c3uFToZjMZSYtUWM0qboy8Vc",type:"POST",contentType:"application/json; charset=utf-8",data:JSON.stringify({document:{type:"PLAIN_TEXT",content:e}})}).done(function(e){console.log(e),o.innerHTML+='<p style="font-family:roboto-black"> Sentiment detected has a magnitude of '+e.documentSentiment.magnitude+" with polarity of "+e.documentSentiment.polarity+".</p>"}),$.ajax({url:"https://language.googleapis.com/v1beta1/documents:annotateText?key=AIzaSyDEw3s5ll9c3uFToZjMZSYtUWM0qboy8Vc",type:"POST",contentType:"application/json; charset=utf-8",data:JSON.stringify({document:{type:"PLAIN_TEXT",content:e},features:{extractSyntax:!0,extractEntities:!0,extractDocumentSentiment:!0},encodingType:"UTF8"})}).done(function(e){console.log(e),o.innerHTML+='<p style="font-family:roboto-black"> Total sentences: '+e.sentences.length+".</p>",o.innerHTML+='<p style="font-family:roboto-black"> Total entities: '+e.entities.length+".</p>"}))}):Materialize.toast('<span class="toast-warning">Please add some value to process.</span>',4500)},startCapture:function(){canvas=Polymer.dom(this.root).querySelector("#canvas_"),ctx=canvas.getContext("2d"),video=Polymer.dom(this.root).querySelector("#video"),e=Polymer.dom(this.root).querySelector("#vimg"),b64=Polymer.dom(this.root).querySelector("#b64"),msg=Polymer.dom(this.root).querySelector("#msg"),response=Polymer.dom(this.root).querySelector("#response_div2"),convertEmotionInfoToNum=function(e){return{VERY_UNLIKELY:0,UNLIKELY:1,POSSIBLE:2,LIKELY:3,VERY_LIKELY:4}[e]},pushNotification=function(e,o,t){notify.config({autoClose:4e3}),this.notification(e,o,t)},computeVision=function(e){console.log("computing vision analysis...");var o=b64.innerHTML.split(",")[1];$.ajax({url:"https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDJl2LYW2oRn1YuUOL6FHlEpHq0WP4n-3A",type:"POST",contentType:"application/json; charset=utf-8",data:JSON.stringify({requests:[{image:{content:o},features:[{type:"TYPE_UNSPECIFIED"},{type:"FACE_DETECTION"},{type:"LANDMARK_DETECTION"},{type:"LOGO_DETECTION"},{type:"LABEL_DETECTION"},{type:"TEXT_DETECTION"},{type:"SAFE_SEARCH_DETECTION"},{type:"IMAGE_PROPERTIES"}]}]})}).done(function(o){if("from video"==e)if($("#response").hide(),o.responses[0].faceAnnotations)for(var t="poker",n=0,i=0,a=o.responses[0].faceAnnotations.length;a>i;i++)n=convertEmotionInfoToNum(o.responses[0].faceAnnotations[i].angerLikelihood),t=n>0?"anger":t,t=convertEmotionInfoToNum(o.responses[0].faceAnnotations[i].joyLikelihood)>n?"joy":t,t=convertEmotionInfoToNum(o.responses[0].faceAnnotations[i].sorrowLikelihood)>n?"sorrow":t,t=convertEmotionInfoToNum(o.responses[0].faceAnnotations[i].surpriseLikelihood)>n?"surprise":t,pushNotification("Face detected !","It looks like "+t+" to me...","https://mboilerplate.appspot.com/default/materialize/images/moods/face-"+t+".png");else pushNotification("oops !","we got no faces","none")}).error(function(e){console.log(e)})},timer=setInterval(function(){this.localMediaStream&&(ctx.drawImage(video,0,0),e.src=canvas.toDataURL("image/jpg"),b64.innerHTML=canvas.toDataURL("image/jpg"),computeVision("from video"))},3e3);var e=Polymer.dom(this.root).querySelector("#vimg");$(e).show()},stopCapture:function(){var e=Polymer.dom(this.root).querySelector("#vimg");$(e).hide(),clearInterval(timer)}});</script>
 
 </dom-module>
 </body></html>
