@@ -76,4 +76,11 @@ list of `fragments` in the included `polymer.json` file.  This will ensure
 those components and their dependencies are added to the list of pre-cached
 components (and will have bundles created in the fallback `bundled` build).
 
+### Deploy to Google Cloud's App Engine
+
+Create an app.yaml as the included in source code, just replace the application 
+name with your project id. Beware to include it at the deployable version you
+want to upload, either at build/bundled or build/unbundled. Source code has a copy
+of app.yaml directly in main folder for demonstration purposes on how the .yaml
+must be conformed.
 
